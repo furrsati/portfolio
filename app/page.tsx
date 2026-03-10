@@ -14,8 +14,8 @@ export default function Home() {
     <PageWrapper>
       <Navbar />
       <Hero />
-      <About />
       <Projects />
+      <About />
       <Stats />
       <Testimonials />
       <Blog />

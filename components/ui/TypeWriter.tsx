@@ -4,10 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 
 const phrases = [
-  "Building Marketplaces",
-  "Creating Mobile Apps",
-  "Crafting Web Experiences",
-  "Engineering Full-Stack Solutions",
+  "Building Marketplace Platforms",
+  "Shipping Cross-Platform Apps",
+  "Engineering Escrow Payment Systems",
+  "Scaling Real-Time Applications",
 ];
 
 export default function TypeWriter() {

@@ -42,7 +42,7 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.6 }}
           className="text-xl md:text-2xl text-text-secondary mb-3 font-light"
         >
-          Mobile & Web Full-Stack Developer
+          Full-Stack Developer — React Native · Next.js · Node.js
         </motion.p>
 
         <motion.div
@@ -66,6 +66,31 @@ export default function Hero() {
           <Button variant="outline" size="lg" href="#contact">
             Get in Touch
           </Button>
+        </motion.div>
+
+        {/* Social proof strip */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 1.2 }}
+          className="flex items-center justify-center gap-3 md:gap-6 mt-12 text-sm text-text-muted"
+        >
+          <div className="hidden sm:block h-px w-12 bg-gradient-to-r from-transparent to-border" />
+          <div className="flex items-center gap-1.5">
+            <span className="text-accent font-semibold">3+</span>
+            <span>Years Experience</span>
+          </div>
+          <span className="text-border">·</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-accent font-semibold">5+</span>
+            <span>Projects Shipped</span>
+          </div>
+          <span className="text-border">·</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-accent font-semibold">3</span>
+            <span>Happy Clients</span>
+          </div>
+          <div className="hidden sm:block h-px w-12 bg-gradient-to-l from-transparent to-border" />
         </motion.div>
       </div>
 

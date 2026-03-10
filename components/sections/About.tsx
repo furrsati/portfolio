@@ -10,6 +10,7 @@ import {
 import { skills } from "@/lib/data";
 import SectionHeading from "@/components/ui/SectionHeading";
 import SkillBadge from "@/components/ui/SkillBadge";
+import CodeTerminal from "@/components/ui/CodeTerminal";
 
 export default function About() {
   const categories = [...new Set(skills.map((s) => s.category))];
@@ -30,32 +31,27 @@ export default function About() {
             viewport={viewportConfig}
             variants={fadeInLeft}
           >
-            <div className="relative mb-8">
-              {/* Profile placeholder */}
-              <div className="w-48 h-48 mx-auto lg:mx-0 rounded-2xl bg-surface border-2 border-accent/30 flex items-center justify-center overflow-hidden">
-                <div className="text-6xl font-bold text-accent/30">DZ</div>
-              </div>
-              <div className="absolute -bottom-2 -right-2 w-48 h-48 rounded-2xl border border-accent/10 mx-auto lg:mx-0 hidden lg:block" />
+            <div className="mb-8">
+              <CodeTerminal />
             </div>
 
             <div className="space-y-4 text-text-secondary leading-relaxed">
               <p>
-                I&apos;m a Full-Stack Developer specializing in building
-                production-ready mobile and web applications. With experience in
-                React Native, Next.js, and Node.js, I create seamless
-                cross-platform experiences that scale.
+                I build the apps that startups launch with. From freelancing
+                marketplaces processing real escrow payments to influencer
+                platforms serving thousands of users — I ship
+                production-ready products, not prototypes.
               </p>
               <p>
-                My work spans complex marketplace platforms with escrow payment
-                systems, real-time communication features, and multi-language
-                applications supporting RTL layouts. I take pride in writing
-                clean, maintainable code and delivering products that solve real
-                problems.
+                My sweet spot is the hard stuff: escrow payment systems with
+                Stripe, real-time messaging with Socket.io, multi-language apps
+                with full RTL support, and role-based admin dashboards. If
+                it&apos;s complex, I&apos;ve probably built it.
               </p>
               <p>
-                From database design to pixel-perfect UIs, I handle the full
-                development lifecycle — architecture, implementation, testing,
-                and deployment.
+                One developer, zero handoff friction. I own the full stack — from
+                database architecture to pixel-perfect mobile UIs, from API
+                design to App Store deployment.
               </p>
             </div>
           </motion.div>
