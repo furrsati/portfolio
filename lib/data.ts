@@ -130,39 +130,11 @@ export const testimonials = [
   },
 ];
 
-export const blogPosts = [
-  {
-    title: "Building Escrow Payment Systems with Stripe",
-    excerpt:
-      "A deep dive into implementing secure milestone-based escrow payments using Stripe PaymentIntents API for marketplace platforms.",
-    date: "2026-02-15",
-    readTime: "8 min read",
-    image: "/images/blog/stripe.png",
-  },
-  {
-    title: "React Native vs Expo: When to Use What",
-    excerpt:
-      "Comparing bare React Native workflow with Expo managed workflow based on real production experience building two marketplace apps.",
-    date: "2026-01-20",
-    readTime: "6 min read",
-    image: "/images/blog/rn.png",
-  },
-  {
-    title: "Implementing RTL Support in Multi-Language Apps",
-    excerpt:
-      "Lessons learned from building a fully internationalized app supporting English, French, and Arabic with proper RTL layout handling.",
-    date: "2025-12-10",
-    readTime: "5 min read",
-    image: "/images/blog/rtl.png",
-  },
-];
-
 export const navLinks = [
   { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
   { label: "Stats", href: "#stats" },
   { label: "Testimonials", href: "#testimonials" },
-  { label: "Blog", href: "#blog" },
   { label: "Contact", href: "#contact" },
 ];
 
