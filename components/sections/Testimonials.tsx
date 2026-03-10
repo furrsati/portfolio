@@ -60,7 +60,6 @@ export default function Testimonials() {
         />
 
         <div
-          className="relative min-h-[280px] sm:min-h-[320px]"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
@@ -73,7 +72,6 @@ export default function Testimonials() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="absolute inset-0"
             >
               <div className="bg-background border border-border hover:border-accent/20 rounded-2xl p-5 sm:p-8 md:p-12 text-center transition-colors duration-500">
                 {/* Quote icon */}

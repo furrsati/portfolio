@@ -104,7 +104,7 @@ export default function ProjectCard({
             }}
           >
             {screenshots ? (
-              <div className="pb-4 md:pb-36">
+              <div className="pb-16 md:pb-36">
                 <DeviceShowcase
                   web={screenshots.web}
                   mobile={screenshots.mobile}

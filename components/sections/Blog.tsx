@@ -23,7 +23,7 @@ export default function Blog() {
           className="flex gap-6 overflow-x-auto hide-scrollbar snap-x snap-mandatory pb-4 -mx-1 px-1"
         >
           {blogPosts.map((post) => (
-            <div key={post.title} className="min-w-[300px] md:min-w-[350px] flex-shrink-0 snap-start">
+            <div key={post.title} className="min-w-[260px] sm:min-w-[300px] md:min-w-[350px] flex-shrink-0 snap-start">
               <BlogCard {...post} />
             </div>
           ))}

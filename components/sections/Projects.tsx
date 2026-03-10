@@ -6,7 +6,7 @@ import ProjectCard from "@/components/ui/ProjectCard";
 
 export default function Projects() {
   return (
-    <section id="projects" className="section-padding bg-surface">
+    <section id="projects" className="section-padding bg-surface overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <SectionHeading
           title="Featured Projects"

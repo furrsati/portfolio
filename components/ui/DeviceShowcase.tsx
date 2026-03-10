@@ -162,12 +162,12 @@ export default function DeviceShowcase({ web, mobile, url }: DeviceShowcaseProps
         />
       </div>
 
-      {/* Mobile layout - single phone centered below */}
-      <div className="flex md:hidden justify-center mt-6">
+      {/* Mobile layout - single phone overlapping bottom-right */}
+      <div className="block md:hidden absolute -bottom-16 right-0 z-10">
         <PhoneFrame
           images={mobile}
           delay={0}
-          rotation={0}
+          rotation={3}
           floatDelay={0}
           className="relative"
         />

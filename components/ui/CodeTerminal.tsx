@@ -252,7 +252,7 @@ export default function CodeTerminal() {
         </div>
 
         {/* Code area */}
-        <div className="p-4 font-mono text-xs md:text-sm min-h-[220px] md:min-h-[280px] relative">
+        <div className="p-3 sm:p-4 font-mono text-xs md:text-sm min-h-[180px] md:min-h-[280px] relative">
           <AnimatePresence mode="wait">
             <motion.div
               key={snippetIndex}
@@ -274,7 +274,7 @@ export default function CodeTerminal() {
                   <span className="text-text-muted/30 w-6 text-right mr-4 select-none text-[10px] leading-6 hidden sm:inline">
                     {i + 1}
                   </span>
-                  <span className={`${line.className} leading-6 whitespace-pre`}>
+                  <span className={`${line.className} leading-6 whitespace-pre-wrap`}>
                     {line.text}
                   </span>
                   {/* Typing cursor on the last visible line */}
