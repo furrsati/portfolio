@@ -20,10 +20,12 @@ export default function Blog() {
           whileInView="visible"
           viewport={viewportConfig}
           variants={staggerContainer}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="flex gap-6 overflow-x-auto hide-scrollbar snap-x snap-mandatory pb-4 -mx-1 px-1"
         >
           {blogPosts.map((post) => (
-            <BlogCard key={post.title} {...post} />
+            <div key={post.title} className="min-w-[300px] md:min-w-[350px] flex-shrink-0 snap-start">
+              <BlogCard {...post} />
+            </div>
           ))}
         </motion.div>
       </div>

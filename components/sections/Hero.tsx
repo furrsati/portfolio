@@ -73,21 +73,21 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.2 }}
-          className="flex items-center justify-center gap-3 md:gap-6 mt-12 text-sm text-text-muted"
+          className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 mt-8 sm:mt-12 text-xs sm:text-sm text-text-muted"
         >
           <div className="hidden sm:block h-px w-12 bg-gradient-to-r from-transparent to-border" />
           <div className="flex items-center gap-1.5">
             <span className="text-accent font-semibold">3+</span>
             <span>Years Experience</span>
           </div>
-          <span className="text-border">·</span>
+          <span className="text-border hidden sm:inline">·</span>
           <div className="flex items-center gap-1.5">
-            <span className="text-accent font-semibold">5+</span>
+            <span className="text-accent font-semibold">10+</span>
             <span>Projects Shipped</span>
           </div>
-          <span className="text-border">·</span>
+          <span className="text-border hidden sm:inline">·</span>
           <div className="flex items-center gap-1.5">
-            <span className="text-accent font-semibold">3</span>
+            <span className="text-accent font-semibold">15+</span>
             <span>Happy Clients</span>
           </div>
           <div className="hidden sm:block h-px w-12 bg-gradient-to-l from-transparent to-border" />

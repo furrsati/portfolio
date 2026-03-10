@@ -94,26 +94,10 @@ export const projects = [
       "Real-time notifications & messaging",
     ],
   },
-  {
-    title: "Autre Paris",
-    subtitle: "E-Commerce Admin Platform",
-    description:
-      "A comprehensive e-commerce administration platform with role-based access control supporting 6 different user roles. Features a full audit logging system for security and compliance, secure authentication with JWT sessions, and a clean admin dashboard for managing products, orders, and users.",
-    tech: ["Next.js", "NextAuth", "Prisma", "Tailwind CSS", "TypeScript"],
-    platforms: ["Web"] as const,
-    image: "/images/projects/autreparis.png",
-    screenshots: null,
-    highlights: [
-      "Role-based access control (6 roles)",
-      "Complete audit logging system",
-      "Secure JWT authentication",
-      "Product & order management dashboard",
-    ],
-  },
 ];
 
 export const stats = [
-  { label: "Projects Completed", value: 5, suffix: "+", icon: "projects" },
+  { label: "Projects Completed", value: 10, suffix: "+", icon: "projects" },
   { label: "Lines of Code", value: 50000, suffix: "+", icon: "code" },
   { label: "Technologies Used", value: 15, suffix: "+", icon: "tech" },
   { label: "Years Experience", value: 3, suffix: "+", icon: "years" },

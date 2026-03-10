@@ -239,7 +239,7 @@ export default function CodeTerminal() {
                   setVisibleLines(0);
                   setIsTyping(true);
                 }}
-                className={`px-3 py-1 text-[10px] font-mono rounded-t-md transition-all duration-300 ${
+                className={`px-2 sm:px-3 py-1 text-[10px] font-mono rounded-t-md transition-all duration-300 ${
                   i === snippetIndex
                     ? "bg-[#0d0d1a] text-accent border-t border-x border-accent/20"
                     : "text-text-muted/50 hover:text-text-muted"
@@ -252,7 +252,7 @@ export default function CodeTerminal() {
         </div>
 
         {/* Code area */}
-        <div className="p-4 font-mono text-xs md:text-sm min-h-[280px] relative">
+        <div className="p-4 font-mono text-xs md:text-sm min-h-[220px] md:min-h-[280px] relative">
           <AnimatePresence mode="wait">
             <motion.div
               key={snippetIndex}
@@ -271,7 +271,7 @@ export default function CodeTerminal() {
                     transition: "opacity 0.15s ease, transform 0.15s ease",
                   }}
                 >
-                  <span className="text-text-muted/30 w-6 text-right mr-4 select-none text-[10px] leading-6">
+                  <span className="text-text-muted/30 w-6 text-right mr-4 select-none text-[10px] leading-6 hidden sm:inline">
                     {i + 1}
                   </span>
                   <span className={`${line.className} leading-6 whitespace-pre`}>

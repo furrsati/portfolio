@@ -13,7 +13,7 @@ export default function Projects() {
           subtitle="Production-ready applications built with modern technologies"
         />
 
-        <div className="space-y-24">
+        <div className="space-y-16 md:space-y-24">
           {projects.map((project, i) => (
             <ProjectCard
               key={project.title}

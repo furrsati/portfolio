@@ -23,7 +23,7 @@ export default function About() {
           subtitle="A passionate developer who loves turning ideas into reality"
         />
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           {/* Bio */}
           <motion.div
             initial="hidden"

@@ -95,7 +95,7 @@ function PhoneFrame({
           <div className="absolute top-[3px] left-1/2 -translate-x-1/2 w-16 h-4 bg-[#1a1a2e] rounded-b-xl z-20" />
           {/* Screen */}
           <div className="relative rounded-[17px] overflow-hidden bg-[#0d0d1a]">
-            <div className="aspect-[9/19.5] relative w-[130px] md:w-[150px]">
+            <div className="aspect-[9/19.5] relative w-[160px] md:w-[150px]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={current}
@@ -163,7 +163,7 @@ export default function DeviceShowcase({ web, mobile, url }: DeviceShowcaseProps
       </div>
 
       {/* Mobile layout - single phone centered below */}
-      <div className="flex md:hidden justify-center mt-4">
+      <div className="flex md:hidden justify-center mt-6">
         <PhoneFrame
           images={mobile}
           delay={0}

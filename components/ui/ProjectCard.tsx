@@ -86,7 +86,7 @@ export default function ProjectCard({
       <div
         className={`flex flex-col ${
           reverse ? "lg:flex-row-reverse" : "lg:flex-row"
-        } gap-8 lg:gap-12 items-center`}
+        } gap-6 lg:gap-12 items-center`}
       >
         {/* Project showcase with 3D tilt */}
         <div className="w-full lg:w-1/2" style={{ perspective: "1000px" }}>
@@ -104,7 +104,7 @@ export default function ProjectCard({
             }}
           >
             {screenshots ? (
-              <div className="pb-20 md:pb-36">
+              <div className="pb-4 md:pb-36">
                 <DeviceShowcase
                   web={screenshots.web}
                   mobile={screenshots.mobile}
@@ -150,7 +150,7 @@ export default function ProjectCard({
             {highlights.map((h) => (
               <li
                 key={h}
-                className="flex items-start gap-2.5 text-text-secondary text-sm"
+                className="flex items-start gap-2.5 text-text-secondary text-xs sm:text-sm"
               >
                 <span className="text-accent mt-0.5 text-xs">&#11044;</span>
                 {h}
@@ -170,7 +170,7 @@ export default function ProjectCard({
             {tech.map((t) => (
               <span
                 key={t}
-                className="px-2.5 py-1 bg-surface text-text-muted text-xs rounded-md border border-border/50 hover:border-accent/30 hover:text-text-secondary transition-all duration-300"
+                className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-surface text-text-muted text-[11px] sm:text-xs rounded-md border border-border/50 hover:border-accent/30 hover:text-text-secondary transition-all duration-300"
               >
                 {t}
               </span>

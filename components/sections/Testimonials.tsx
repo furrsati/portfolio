@@ -60,7 +60,7 @@ export default function Testimonials() {
         />
 
         <div
-          className="relative min-h-[320px]"
+          className="relative min-h-[280px] sm:min-h-[320px]"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
@@ -75,7 +75,7 @@ export default function Testimonials() {
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="absolute inset-0"
             >
-              <div className="bg-background border border-border hover:border-accent/20 rounded-2xl p-8 md:p-12 text-center transition-colors duration-500">
+              <div className="bg-background border border-border hover:border-accent/20 rounded-2xl p-5 sm:p-8 md:p-12 text-center transition-colors duration-500">
                 {/* Quote icon */}
                 <svg
                   className="w-10 h-10 text-accent/30 mx-auto mb-4"
@@ -87,7 +87,7 @@ export default function Testimonials() {
 
                 <StarRating rating={testimonials[current].rating} />
 
-                <p className="text-text-secondary text-lg md:text-xl leading-relaxed mb-8 italic">
+                <p className="text-text-secondary text-base sm:text-lg md:text-xl leading-relaxed mb-8 italic">
                   &ldquo;{testimonials[current].content}&rdquo;
                 </p>
 
@@ -132,7 +132,7 @@ export default function Testimonials() {
                   setDirection(i > current ? 1 : -1);
                   setCurrent(i);
                 }}
-                className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${
                   i === current
                     ? "bg-accent w-6"
                     : "bg-border hover:bg-text-muted"
