@@ -75,7 +75,7 @@ export default function Footer() {
                 Dani Zein
               </a>
               <p className="text-text-muted text-sm mt-1">
-                Mobile & Web Full-Stack Developer
+                Full-Stack Developer
               </p>
             </div>
 
@@ -95,12 +95,9 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-text-muted text-sm">
+          <div className="mt-8 pt-8 border-t border-border/50">
+            <p className="text-text-muted text-sm text-center md:text-left">
               &copy; {new Date().getFullYear()} Dani Zein. All rights reserved.
-            </p>
-            <p className="text-text-muted text-xs">
-              Built with Next.js & Tailwind CSS
             </p>
           </div>
         </div>

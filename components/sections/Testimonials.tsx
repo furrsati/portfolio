@@ -2,25 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { fadeInUp, viewportConfig } from "@/lib/animations";
 import { testimonials } from "@/lib/data";
-import SectionHeading from "@/components/ui/SectionHeading";
-
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center justify-center gap-1 mb-4">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <svg
-          key={star}
-          className={`w-4 h-4 ${star <= rating ? "text-accent" : "text-border"}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
-    </div>
-  );
-}
 
 export default function Testimonials() {
   const [current, setCurrent] = useState(0);
@@ -46,21 +29,34 @@ export default function Testimonials() {
   }, [next, isPaused]);
 
   const variants = {
-    enter: (dir: number) => ({ x: dir > 0 ? 200 : -200, opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (dir: number) => ({ x: dir > 0 ? -200 : 200, opacity: 0 }),
+    enter: (dir: number) => ({ x: dir > 0 ? 80 : -80, opacity: 0, scale: 0.97 }),
+    center: { x: 0, opacity: 1, scale: 1 },
+    exit: (dir: number) => ({ x: dir > 0 ? -80 : 80, opacity: 0, scale: 0.97 }),
   };
 
   return (
-    <section id="testimonials" className="section-padding bg-surface">
-      <div className="max-w-4xl mx-auto">
-        <SectionHeading
-          title="What People Say"
-          subtitle="Feedback from clients and collaborators"
-        />
+    <section id="testimonials" className="section-padding bg-surface relative overflow-hidden">
+      {/* Decorative background gradient */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-br from-accent/[0.03] via-transparent to-accent/[0.02] rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto relative">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          variants={fadeInUp}
+          className="mb-10 md:mb-16"
+        >
+          <p className="text-sm uppercase tracking-widest text-text-muted mb-3">
+            Testimonials
+          </p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text-primary">
+            Trusted by founders.
+          </h2>
+        </motion.div>
 
         <div
-          className="relative min-h-[380px] sm:min-h-[400px]"
+          className="relative min-h-[300px] sm:min-h-[320px]"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
@@ -72,40 +68,39 @@ export default function Testimonials() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="absolute inset-0"
             >
-              <div className="bg-background border border-border hover:border-accent/20 rounded-2xl p-5 sm:p-8 md:p-12 text-center transition-colors duration-500">
-                {/* Quote icon */}
-                <svg
-                  className="w-10 h-10 text-accent/30 mx-auto mb-4"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                </svg>
+              {/* Glassmorphism card */}
+              <div className="relative backdrop-blur-xl bg-white/60 border border-white/80 rounded-3xl p-6 sm:p-8 md:p-10 shadow-[0_8px_32px_rgba(0,0,0,0.06)]">
+                {/* Large decorative quote */}
+                <span className="absolute top-4 right-6 sm:top-6 sm:right-8 text-[80px] sm:text-[100px] leading-none font-serif text-accent/[0.07] select-none pointer-events-none">
+                  &ldquo;
+                </span>
 
-                <StarRating rating={testimonials[current].rating} />
-
-                <p className="text-text-secondary text-base sm:text-lg md:text-xl leading-relaxed mb-8 italic">
-                  &ldquo;{testimonials[current].content}&rdquo;
+                {/* Quote text */}
+                <p className="text-text-primary text-lg sm:text-xl md:text-2xl leading-relaxed mb-8 relative z-10 max-w-3xl">
+                  {testimonials[current].content}
                 </p>
 
-                <div>
-                  <div className="w-12 h-12 bg-accent/20 rounded-full mx-auto mb-3 flex items-center justify-center border border-accent/30">
-                    <span className="text-accent font-bold text-sm">
+                {/* Author info - inline */}
+                <div className="flex items-center gap-4 relative z-10">
+                  <div className="w-11 h-11 rounded-full bg-accent/10 flex items-center justify-center border border-accent/20">
+                    <span className="text-accent font-semibold text-sm">
                       {testimonials[current].name
                         .split(" ")
                         .map((n) => n[0])
                         .join("")}
                     </span>
                   </div>
-                  <p className="text-text-primary font-semibold">
-                    {testimonials[current].name}
-                  </p>
-                  <p className="text-text-muted text-sm">
-                    {testimonials[current].role}
-                  </p>
+                  <div>
+                    <p className="text-text-primary font-semibold text-sm">
+                      {testimonials[current].name}
+                    </p>
+                    <p className="text-text-muted text-xs">
+                      {testimonials[current].role}
+                    </p>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -113,18 +108,18 @@ export default function Testimonials() {
         </div>
 
         {/* Controls */}
-        <div className="flex items-center justify-center gap-6 mt-8 relative z-10">
+        <div className="flex items-center gap-4 mt-8 relative z-10">
           <button
             onClick={prev}
-            className="w-10 h-10 rounded-full border border-border hover:border-accent text-text-muted hover:text-accent transition-colors flex items-center justify-center cursor-pointer"
+            className="w-9 h-9 rounded-full border border-border/80 hover:border-accent/40 text-text-muted hover:text-accent transition-all duration-300 flex items-center justify-center cursor-pointer backdrop-blur-sm bg-white/40"
             aria-label="Previous testimonial"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             {testimonials.map((_, i) => (
               <button
                 key={i}
@@ -132,10 +127,10 @@ export default function Testimonials() {
                   setDirection(i > current ? 1 : -1);
                   setCurrent(i);
                 }}
-                className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${
+                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                   i === current
                     ? "bg-accent w-6"
-                    : "bg-border hover:bg-text-muted"
+                    : "bg-border/60 w-1.5 hover:bg-text-muted"
                 }`}
                 aria-label={`Go to testimonial ${i + 1}`}
               />
@@ -144,10 +139,10 @@ export default function Testimonials() {
 
           <button
             onClick={next}
-            className="w-10 h-10 rounded-full border border-border hover:border-accent text-text-muted hover:text-accent transition-colors flex items-center justify-center cursor-pointer"
+            className="w-9 h-9 rounded-full border border-border/80 hover:border-accent/40 text-text-muted hover:text-accent transition-all duration-300 flex items-center justify-center cursor-pointer backdrop-blur-sm bg-white/40"
             aria-label="Next testimonial"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>

@@ -25,7 +25,7 @@ export default function SectionHeading({ title, subtitle }: SectionHeadingProps)
           {subtitle}
         </p>
       )}
-      <div className="mt-4 mx-auto w-24 h-1 bg-gradient-to-r from-accent to-[#7B61FF] rounded-full shadow-[0_0_15px_rgba(0,212,255,0.3)]" />
+      <div className="mt-4 mx-auto w-24 h-1 bg-gradient-to-r from-accent to-[#475569] rounded-full shadow-[0_2px_8px_rgba(15,23,42,0.15)]" />
     </motion.div>
   );
 }

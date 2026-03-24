@@ -23,6 +23,7 @@ export const projects = [
   {
     title: "Furrsati",
     subtitle: "Freelancing Marketplace",
+    icon: "/images/projects/furrsati/icon.png",
     description:
       "A full-stack freelancing marketplace that connects freelancers with clients. Features an escrow-based milestone payment system where money is held securely until work is approved, protecting both parties. Includes real-time messaging, KYC identity verification, and a comprehensive admin dashboard.",
     tech: [
@@ -56,10 +57,17 @@ export const projects = [
       "KYC identity verification flow",
       "Admin dashboard with dispute resolution",
     ],
+    brandColors: {
+      primary: "#FAA21B",
+      secondary: "#05696B",
+      primaryRgb: "250,162,27",
+      secondaryRgb: "5,105,107",
+    },
   },
   {
     title: "Collabfront",
     subtitle: "Influencer-Brand Collaboration Platform",
+    icon: "/images/projects/collabfront/icon.png",
     description:
       "A marketplace connecting influencers with brands for content collaborations. Supports paid campaigns, barter collaborations, and direct booking with built-in escrow payments. Features multi-language support including Arabic with full RTL layout, and a subscription system for premium features.",
     tech: [
@@ -93,15 +101,15 @@ export const projects = [
       "Campaign management system",
       "Real-time notifications & messaging",
     ],
+    brandColors: {
+      primary: "#5656ff",
+      secondary: "#8d53ff",
+      primaryRgb: "86,86,255",
+      secondaryRgb: "141,83,255",
+    },
   },
 ];
 
-export const stats = [
-  { label: "Projects Completed", value: 10, suffix: "+", icon: "projects" },
-  { label: "Lines of Code", value: 50000, suffix: "+", icon: "code" },
-  { label: "Technologies Used", value: 15, suffix: "+", icon: "tech" },
-  { label: "Years Experience", value: 3, suffix: "+", icon: "years" },
-];
 
 export const testimonials = [
   {
@@ -109,7 +117,7 @@ export const testimonials = [
     role: "Startup Founder",
     rating: 5,
     content:
-      "Dani delivered our entire platform from scratch — mobile apps, backend, and admin dashboard. His attention to detail and ability to handle complex payment integrations was impressive.",
+      "Dani delivered our entire platform from scratch: mobile apps, backend, and admin dashboard. His attention to detail and ability to handle complex payment integrations was impressive.",
     avatar: "/images/testimonials/avatar1.png",
   },
   {
@@ -131,9 +139,8 @@ export const testimonials = [
 ];
 
 export const navLinks = [
-  { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
-  { label: "Stats", href: "#stats" },
+  { label: "About", href: "#about" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "Contact", href: "#contact" },
 ];

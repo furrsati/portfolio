@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function LoadingScreen({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,21 +31,28 @@ export default function LoadingScreen({ children }: { children: React.ReactNode 
               <motion.div
                 animate={{
                   boxShadow: [
-                    "0 0 0 rgba(0, 212, 255, 0)",
-                    "0 0 40px rgba(0, 212, 255, 0.4)",
-                    "0 0 0 rgba(0, 212, 255, 0)",
+                    "0 0 0 rgba(15, 23, 42, 0)",
+                    "0 0 40px rgba(15, 23, 42, 0.15)",
+                    "0 0 0 rgba(15, 23, 42, 0)",
                   ],
                 }}
                 transition={{ duration: 1.2, ease: "easeInOut" }}
-                className="inline-block rounded-2xl p-6"
+                className="inline-block rounded-full p-1"
               >
-                <span className="text-5xl font-bold text-gradient">DZ</span>
+                <Image
+                  src="/images/portrait.jpg"
+                  alt="Dani Zein"
+                  width={80}
+                  height={80}
+                  className="rounded-full object-cover w-20 h-20"
+                  priority
+                />
               </motion.div>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 1.2, delay: 0.3, ease: "easeInOut" }}
-                className="h-[2px] bg-gradient-to-r from-accent to-[#7B61FF] mt-4 mx-auto max-w-[80px]"
+                className="h-[2px] bg-gradient-to-r from-accent to-[#475569] mt-4 mx-auto max-w-[80px]"
               />
             </motion.div>
           </motion.div>

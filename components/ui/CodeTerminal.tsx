@@ -17,43 +17,43 @@ const snippets: CodeSnippet[] = [
   {
     filename: "escrow.ts",
     lines: [
-      { text: "// Stripe escrow payment release", className: "text-text-muted" },
+      { text: "// Stripe escrow payment release", className: "text-[#6B6B80]" },
       {
         text: "async function ",
-        className: "text-accent",
+        className: "text-[#818CF8]",
       },
       {
         text: "releaseMilestone",
-        className: "text-[#7B61FF]",
+        className: "text-[#A78BFA]",
       },
       {
         text: "(milestoneId: string) {",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: '  const milestone = await prisma',
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "    .milestone.findUnique({",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: '      where: { id: milestoneId },',
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "    });",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       { text: "", className: "" },
       {
         text: "  await stripe.transfers.create({",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "    amount: milestone.amount,",
-        className: "text-accent",
+        className: "text-[#818CF8]",
       },
       {
         text: '    currency: "usd",',
@@ -61,46 +61,46 @@ const snippets: CodeSnippet[] = [
       },
       {
         text: "    destination: milestone.freelancerStripeId,",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "  });",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "}",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
     ],
   },
   {
     filename: "useSocket.ts",
     lines: [
-      { text: "// Real-time messaging hook", className: "text-text-muted" },
+      { text: "// Real-time messaging hook", className: "text-[#6B6B80]" },
       {
         text: "function ",
-        className: "text-accent",
+        className: "text-[#818CF8]",
       },
       {
         text: "useSocket",
-        className: "text-[#7B61FF]",
+        className: "text-[#A78BFA]",
       },
       {
         text: "(chatId: string) {",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "  const [messages, setMessages] =",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "    useState<Message[]>([]);",
-        className: "text-accent",
+        className: "text-[#818CF8]",
       },
       { text: "", className: "" },
       {
         text: "  useEffect(() => {",
-        className: "text-accent",
+        className: "text-[#818CF8]",
       },
       {
         text: '    socket.emit("join", chatId);',
@@ -112,41 +112,41 @@ const snippets: CodeSnippet[] = [
       },
       {
         text: "      setMessages(prev =>",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "        [...prev, msg]",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "      );",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "    });",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: "  }, [chatId]);",
-        className: "text-accent",
+        className: "text-[#818CF8]",
       },
     ],
   },
   {
     filename: "i18n.config.ts",
     lines: [
-      { text: "// Multi-language RTL support", className: "text-text-muted" },
+      { text: "// Multi-language RTL support", className: "text-[#6B6B80]" },
       {
         text: "export const ",
-        className: "text-accent",
+        className: "text-[#818CF8]",
       },
       {
         text: "i18nConfig",
-        className: "text-[#7B61FF]",
+        className: "text-[#A78BFA]",
       },
       {
         text: " = {",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: '  locales: ["en", "fr", "ar"],',
@@ -164,20 +164,20 @@ const snippets: CodeSnippet[] = [
       { text: "", className: "" },
       {
         text: "  getDirection: (locale) =>",
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: '    rtlLocales.includes(locale)',
-        className: "text-text-secondary",
+        className: "text-[#A0A0B8]",
       },
       {
         text: '      ? "rtl" : "ltr",',
-        className: "text-accent",
+        className: "text-[#818CF8]",
       },
       { text: "", className: "" },
       {
         text: "  // Auto-detect from browser",
-        className: "text-text-muted",
+        className: "text-[#6B6B80]",
       },
       {
         text: "  detect: [\"cookie\", \"header\"],",
@@ -241,8 +241,8 @@ export default function CodeTerminal() {
                 }}
                 className={`px-2 sm:px-3 py-1 text-[10px] font-mono rounded-t-md transition-all duration-300 ${
                   i === snippetIndex
-                    ? "bg-[#0d0d1a] text-accent border-t border-x border-accent/20"
-                    : "text-text-muted/50 hover:text-text-muted"
+                    ? "bg-[#0d0d1a] text-[#818CF8] border-t border-x border-accent/20"
+                    : "text-[#6B6B80]/50 hover:text-[#6B6B80]"
                 }`}
               >
                 {s.filename}
@@ -271,7 +271,7 @@ export default function CodeTerminal() {
                     transition: "opacity 0.15s ease, transform 0.15s ease",
                   }}
                 >
-                  <span className="text-text-muted/30 w-6 text-right mr-4 select-none text-[10px] leading-6 hidden sm:inline">
+                  <span className="text-[#6B6B80]/30 w-6 text-right mr-4 select-none text-[10px] leading-6 hidden sm:inline">
                     {i + 1}
                   </span>
                   <span className={`${line.className} leading-6 whitespace-pre-wrap`}>
@@ -286,7 +286,7 @@ export default function CodeTerminal() {
                         repeat: Infinity,
                         repeatType: "reverse",
                       }}
-                      className="inline-block w-[2px] h-4 bg-accent ml-0.5 mt-1"
+                      className="inline-block w-[2px] h-4 bg-[#818CF8] ml-0.5 mt-1"
                     />
                   )}
                 </div>

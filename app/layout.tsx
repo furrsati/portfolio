@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Dani Zein | Mobile & Web Full-Stack Developer",
   description:
-    "Portfolio of Dani Zein — Full-Stack Developer specializing in React Native, Next.js, and Node.js. Building production-ready mobile and web applications.",
+    "Dani Zein builds production-ready mobile and web platforms for startups. React Native, Next.js, Node.js. From idea to App Store.",
   keywords: [
     "Dani Zein",
     "Full-Stack Developer",
@@ -44,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
       >

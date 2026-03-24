@@ -3,10 +3,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface BrandColors {
+  primary: string;
+  secondary: string;
+  primaryRgb: string;
+  secondaryRgb: string;
+}
+
 interface DeviceShowcaseProps {
   web: string;
   mobile: string[];
   url: string;
+  brandColors?: BrandColors;
 }
 
 function BrowserFrame({ src, url }: { src: string; url: string }) {
@@ -27,7 +35,7 @@ function BrowserFrame({ src, url }: { src: string; url: string }) {
             <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
           </div>
           <div className="flex-1 mx-4">
-            <div className="bg-[#0d0d1a] rounded-md px-3 py-1 text-[10px] text-text-muted/50 font-mono truncate">
+            <div className="bg-[#0d0d1a] rounded-md px-3 py-1 text-[10px] text-[#6B6B80]/50 font-mono truncate">
               {url}
             </div>
           </div>
@@ -53,12 +61,14 @@ function PhoneFrame({
   rotation,
   className,
   floatDelay,
+  brandColors,
 }: {
   images: string[];
   delay: number;
   rotation: number;
   className?: string;
   floatDelay: number;
+  brandColors?: BrandColors;
 }) {
   const [current, setCurrent] = useState(0);
 
@@ -90,7 +100,10 @@ function PhoneFrame({
         style={{ animationDelay: `${floatDelay}s` }}
       >
         {/* Phone body */}
-        <div className="relative bg-[#1a1a2e] rounded-[20px] p-[3px] shadow-[0_10px_40px_rgba(0,0,0,0.5),0_0_20px_rgba(0,212,255,0.08)]">
+        <div
+          className="relative bg-[#1a1a2e] rounded-[20px] p-[3px]"
+          style={{ boxShadow: `0 10px 40px rgba(0,0,0,0.3), 0 0 20px rgba(${brandColors?.primaryRgb ?? "15,23,42"},0.08)` }}
+        >
           {/* Notch */}
           <div className="absolute top-[3px] left-1/2 -translate-x-1/2 w-16 h-4 bg-[#1a1a2e] rounded-b-xl z-20" />
           {/* Screen */}
@@ -122,7 +135,7 @@ function PhoneFrame({
   );
 }
 
-export default function DeviceShowcase({ web, mobile, url }: DeviceShowcaseProps) {
+export default function DeviceShowcase({ web, mobile, url, brandColors }: DeviceShowcaseProps) {
   // Each phone gets all 5 images but starting at a different offset — guarantees uniqueness
   const rotateArray = (arr: string[], offset: number) => [
     ...arr.slice(offset),
@@ -144,6 +157,7 @@ export default function DeviceShowcase({ web, mobile, url }: DeviceShowcaseProps
           delay={0}
           rotation={-6}
           floatDelay={0}
+          brandColors={brandColors}
           className="relative z-10 translate-x-3"
         />
         <PhoneFrame
@@ -151,6 +165,7 @@ export default function DeviceShowcase({ web, mobile, url }: DeviceShowcaseProps
           delay={1}
           rotation={0}
           floatDelay={0.5}
+          brandColors={brandColors}
           className="relative z-20 -translate-y-4"
         />
         <PhoneFrame
@@ -158,6 +173,7 @@ export default function DeviceShowcase({ web, mobile, url }: DeviceShowcaseProps
           delay={2}
           rotation={6}
           floatDelay={1}
+          brandColors={brandColors}
           className="relative z-10 -translate-x-3"
         />
       </div>
@@ -169,12 +185,16 @@ export default function DeviceShowcase({ web, mobile, url }: DeviceShowcaseProps
           delay={0}
           rotation={3}
           floatDelay={0}
+          brandColors={brandColors}
           className="relative"
         />
       </div>
 
       {/* Glow effect under phones */}
-      <div className="hidden md:block absolute -bottom-12 right-0 w-80 h-20 bg-accent/10 blur-3xl rounded-full pointer-events-none" />
+      <div
+        className="hidden md:block absolute -bottom-12 right-0 w-80 h-20 blur-3xl rounded-full pointer-events-none"
+        style={{ backgroundColor: brandColors ? `rgba(${brandColors.primaryRgb},0.05)` : "rgba(15,23,42,0.05)" }}
+      />
     </div>
   );
 }

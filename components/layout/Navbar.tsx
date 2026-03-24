@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { navLinks } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,9 +57,16 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <a
             href="#"
-            className="text-xl font-bold text-accent hover:text-accent-dark transition-colors"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            DZ
+            <Image
+              src="/images/portrait.jpg"
+              alt="Dani Zein"
+              width={32}
+              height={32}
+              className="rounded-full object-cover w-8 h-8"
+            />
+            <span className="text-sm font-semibold text-text-primary hidden sm:inline">Dani Zein</span>
           </a>
 
           {/* Desktop nav */}
@@ -77,6 +85,12 @@ export default function Navbar() {
                 {label}
               </a>
             ))}
+            <a
+              href="#contact"
+              className="ml-2 px-5 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent-dark transition-all duration-300 hover:shadow-[0_4px_12px_rgba(15,23,42,0.25)]"
+            >
+              Let&apos;s Talk
+            </a>
           </div>
 
           {/* Mobile hamburger */}
@@ -134,7 +148,7 @@ export default function Navbar() {
       {/* Scroll progress bar */}
       <motion.div
         style={{ scaleX, transformOrigin: "left" }}
-        className="h-[2px] bg-gradient-to-r from-accent to-[#7B61FF]"
+        className="h-[2px] bg-gradient-to-r from-accent to-[#475569]"
       />
     </motion.nav>
   );

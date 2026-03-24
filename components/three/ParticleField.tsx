@@ -25,8 +25,8 @@ export default function ParticleField() {
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const siz = new Float32Array(count);
-    const color1 = new THREE.Color("#00D4FF");
-    const color2 = new THREE.Color("#7B61FF");
+    const color1 = new THREE.Color("#334155");
+    const color2 = new THREE.Color("#64748B");
     const tempColor = new THREE.Color();
 
     for (let i = 0; i < count; i++) {
@@ -41,7 +41,7 @@ export default function ParticleField() {
 
       const t = Math.random();
       tempColor.copy(color1).lerp(color2, t);
-      const intensity = 0.4 + Math.random() * 0.6;
+      const intensity = 0.3 + Math.random() * 0.5;
       col[i3] = tempColor.r * intensity;
       col[i3 + 1] = tempColor.g * intensity;
       col[i3 + 2] = tempColor.b * intensity;
@@ -112,12 +112,12 @@ export default function ParticleField() {
             linePositions[idx + 5] = jz;
 
             const alpha = 1 - dist / connectionDistance;
-            lineColors[idx] = 0 * alpha;
-            lineColors[idx + 1] = 0.83 * alpha;
-            lineColors[idx + 2] = 1 * alpha;
-            lineColors[idx + 3] = 0.48 * alpha;
-            lineColors[idx + 4] = 0.38 * alpha;
-            lineColors[idx + 5] = 1 * alpha;
+            lineColors[idx] = 0.2 * alpha;
+            lineColors[idx + 1] = 0.25 * alpha;
+            lineColors[idx + 2] = 0.33 * alpha;
+            lineColors[idx + 3] = 0.39 * alpha;
+            lineColors[idx + 4] = 0.45 * alpha;
+            lineColors[idx + 5] = 0.55 * alpha;
 
             lineIdx++;
           }
@@ -143,10 +143,10 @@ export default function ParticleField() {
           size={0.035}
           vertexColors
           transparent
-          opacity={0.85}
+          opacity={0.4}
           sizeAttenuation
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={THREE.NormalBlending}
         />
       </points>
 
@@ -165,9 +165,9 @@ export default function ParticleField() {
           <lineBasicMaterial
             vertexColors
             transparent
-            opacity={0.15}
+            opacity={0.08}
             depthWrite={false}
-            blending={THREE.AdditiveBlending}
+            blending={THREE.NormalBlending}
           />
         </lineSegments>
       )}
