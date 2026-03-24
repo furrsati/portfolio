@@ -93,7 +93,7 @@ export default function About() {
           >
             <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-border shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
               <Image
-                src="/images/portrait.jpg"
+                src="/images/portrait.png"
                 alt="Dani Zein"
                 fill
                 className="object-cover object-top"

@@ -40,7 +40,7 @@ export default function LoadingScreen({ children }: { children: React.ReactNode 
                 className="inline-block rounded-full p-1"
               >
                 <Image
-                  src="/images/portrait.jpg"
+                  src="/images/portrait.png"
                   alt="Dani Zein"
                   width={80}
                   height={80}

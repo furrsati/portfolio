@@ -60,7 +60,7 @@ export default function Navbar() {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <Image
-              src="/images/portrait.jpg"
+              src="/images/portrait.png"
               alt="Dani Zein"
               width={32}
               height={32}
