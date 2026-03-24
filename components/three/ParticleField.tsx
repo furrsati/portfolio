@@ -6,7 +6,6 @@ import * as THREE from "three";
 
 export default function ParticleField() {
   const pointsRef = useRef<THREE.Points>(null);
-  const linesRef = useRef<THREE.LineSegments>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const { viewport } = useThree();
 
@@ -17,16 +16,15 @@ export default function ParticleField() {
   }, []);
 
   const count = isMobile ? 600 : 1200;
-  const connectionCount = isMobile ? 0 : 400;
-  const maxConnections = 150;
-  const connectionDistance = 1.8;
 
-  const [positions, colors, sizes] = useMemo(() => {
+  const [positions, originalPositions, colors, sizes] = useMemo(() => {
     const pos = new Float32Array(count * 3);
+    const origPos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const siz = new Float32Array(count);
     const color1 = new THREE.Color("#334155");
     const color2 = new THREE.Color("#64748B");
+    const warmColor = new THREE.Color("#D4A574");
     const tempColor = new THREE.Color();
 
     for (let i = 0; i < count; i++) {
@@ -39,25 +37,31 @@ export default function ParticleField() {
       pos[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       pos[i3 + 2] = (Math.random() - 0.5) * 8;
 
-      const t = Math.random();
-      tempColor.copy(color1).lerp(color2, t);
-      const intensity = 0.3 + Math.random() * 0.5;
-      col[i3] = tempColor.r * intensity;
-      col[i3 + 1] = tempColor.g * intensity;
-      col[i3 + 2] = tempColor.b * intensity;
+      origPos[i3] = pos[i3];
+      origPos[i3 + 1] = pos[i3 + 1];
+      origPos[i3 + 2] = pos[i3 + 2];
 
-      siz[i] = 0.02 + Math.random() * 0.04;
+      // 5% warm accent particles, concentrated in upper-right
+      const isWarm = i % 20 === 0 && pos[i3] > 0 && pos[i3 + 1] > 0;
+
+      if (isWarm) {
+        const intensity = 0.4 + Math.random() * 0.4;
+        col[i3] = warmColor.r * intensity;
+        col[i3 + 1] = warmColor.g * intensity;
+        col[i3 + 2] = warmColor.b * intensity;
+      } else {
+        const t = Math.random();
+        tempColor.copy(color1).lerp(color2, t);
+        const intensity = 0.3 + Math.random() * 0.5;
+        col[i3] = tempColor.r * intensity;
+        col[i3 + 1] = tempColor.g * intensity;
+        col[i3 + 2] = tempColor.b * intensity;
+      }
+
+      siz[i] = 0.01 + Math.random() * 0.02;
     }
-    return [pos, col, siz];
+    return [pos, origPos, col, siz];
   }, [count]);
-
-  const linePositions = useMemo(() => {
-    return new Float32Array(maxConnections * 6);
-  }, []);
-
-  const lineColors = useMemo(() => {
-    return new Float32Array(maxConnections * 6);
-  }, []);
 
   useFrame((state) => {
     if (!pointsRef.current) return;
@@ -75,102 +79,55 @@ export default function ParticleField() {
     pointsRef.current.position.x = mouseRef.current.x * 0.3;
     pointsRef.current.position.y = mouseRef.current.y * 0.3;
 
-    // Update connection lines
-    if (linesRef.current && connectionCount > 0) {
-      linesRef.current.position.copy(pointsRef.current.position);
-      linesRef.current.rotation.copy(pointsRef.current.rotation);
+    // Cursor gravity well: attract every 3rd particle toward mouse
+    const posArray = pointsRef.current.geometry.attributes.position
+      .array as Float32Array;
+    const gravityRadius = 2.0;
+    const gravityStrength = 0.01;
+    const springBack = 0.005;
+    const mx = pointer.x * viewport.width * 0.5;
+    const my = pointer.y * viewport.height * 0.5;
 
-      const posAttr = pointsRef.current.geometry.attributes.position;
-      let lineIdx = 0;
+    for (let i = 0; i < count; i += 3) {
+      const i3 = i * 3;
+      const px = posArray[i3];
+      const py = posArray[i3 + 1];
 
-      for (let i = 0; i < connectionCount && lineIdx < maxConnections; i++) {
-        const ix = posAttr.getX(i);
-        const iy = posAttr.getY(i);
-        const iz = posAttr.getZ(i);
+      const dx = mx - px;
+      const dy = my - py;
+      const dist = Math.sqrt(dx * dx + dy * dy);
 
-        for (
-          let j = i + 1;
-          j < connectionCount && lineIdx < maxConnections;
-          j++
-        ) {
-          const jx = posAttr.getX(j);
-          const jy = posAttr.getY(j);
-          const jz = posAttr.getZ(j);
-
-          const dx = ix - jx;
-          const dy = iy - jy;
-          const dz = iz - jz;
-          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-          if (dist < connectionDistance) {
-            const idx = lineIdx * 6;
-            linePositions[idx] = ix;
-            linePositions[idx + 1] = iy;
-            linePositions[idx + 2] = iz;
-            linePositions[idx + 3] = jx;
-            linePositions[idx + 4] = jy;
-            linePositions[idx + 5] = jz;
-
-            const alpha = 1 - dist / connectionDistance;
-            lineColors[idx] = 0.2 * alpha;
-            lineColors[idx + 1] = 0.25 * alpha;
-            lineColors[idx + 2] = 0.33 * alpha;
-            lineColors[idx + 3] = 0.39 * alpha;
-            lineColors[idx + 4] = 0.45 * alpha;
-            lineColors[idx + 5] = 0.55 * alpha;
-
-            lineIdx++;
-          }
-        }
+      if (dist < gravityRadius && dist > 0.01) {
+        const force = (1 - dist / gravityRadius) * gravityStrength;
+        posArray[i3] += dx * force;
+        posArray[i3 + 1] += dy * force;
+      } else {
+        posArray[i3] += (originalPositions[i3] - posArray[i3]) * springBack;
+        posArray[i3 + 1] +=
+          (originalPositions[i3 + 1] - posArray[i3 + 1]) * springBack;
+        posArray[i3 + 2] +=
+          (originalPositions[i3 + 2] - posArray[i3 + 2]) * springBack;
       }
-
-      const lineGeom = linesRef.current.geometry;
-      lineGeom.attributes.position.needsUpdate = true;
-      lineGeom.attributes.color.needsUpdate = true;
-      lineGeom.setDrawRange(0, lineIdx * 2);
     }
+    pointsRef.current.geometry.attributes.position.needsUpdate = true;
   });
 
   return (
-    <group>
-      <points ref={pointsRef}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-          <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-          <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.035}
-          vertexColors
-          transparent
-          opacity={0.4}
-          sizeAttenuation
-          depthWrite={false}
-          blending={THREE.NormalBlending}
-        />
-      </points>
-
-      {connectionCount > 0 && (
-        <lineSegments ref={linesRef}>
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              args={[linePositions, 3]}
-            />
-            <bufferAttribute
-              attach="attributes-color"
-              args={[lineColors, 3]}
-            />
-          </bufferGeometry>
-          <lineBasicMaterial
-            vertexColors
-            transparent
-            opacity={0.08}
-            depthWrite={false}
-            blending={THREE.NormalBlending}
-          />
-        </lineSegments>
-      )}
-    </group>
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
+        <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.02}
+        vertexColors
+        transparent
+        opacity={0.4}
+        sizeAttenuation
+        depthWrite={false}
+        blending={THREE.NormalBlending}
+      />
+    </points>
   );
 }

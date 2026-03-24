@@ -75,6 +75,24 @@ export const springIn: Variants = {
   },
 };
 
+export const clipRevealUp: Variants = {
+  hidden: { clipPath: "inset(100% 0 0 0)", y: 20 },
+  visible: {
+    clipPath: "inset(0% 0 0 0)",
+    y: 0,
+    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
+
+export const scaleInSubtle: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
+
 export const viewportConfig = {
   once: true,
   amount: 0.2 as const,

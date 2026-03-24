@@ -10,9 +10,16 @@ const Canvas = dynamic(
 
 const ParticleField = dynamic(() => import("./ParticleField"), { ssr: false });
 
-export default function Scene() {
+interface SceneProps {
+  opacity?: number;
+}
+
+export default function Scene({ opacity = 1 }: SceneProps) {
   return (
-    <div className="absolute inset-0 z-0">
+    <div
+      className="absolute inset-0 z-0 transition-opacity duration-300"
+      style={{ opacity }}
+    >
       <Suspense fallback={<div className="absolute inset-0 bg-background" />}>
         <Canvas
           camera={{ position: [0, 0, 5], fov: 75 }}
