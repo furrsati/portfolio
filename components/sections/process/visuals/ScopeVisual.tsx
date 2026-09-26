@@ -34,16 +34,19 @@ export default function ScopeVisual({ play, reduced, accent }: VisualProps) {
       <div aria-hidden="true" className={`absolute inset-0 translate-x-3 translate-y-3 rotate-[2.2deg] opacity-45 ${glass}`} />
 
       <div className={`relative px-4 pb-4 pt-3.5 @md:px-5 @md:pb-5 @md:pt-4 ${glass}`}>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 @sm:gap-3">
           <IconTile accent={accent} size={32}>
             <FileText className="h-4 w-4" strokeWidth={1.8} />
           </IconTile>
           <div className="min-w-0 flex-1">
             <div className="text-[14px] font-medium leading-tight text-text">Scope · your project</div>
-            <div className="mt-0.5 text-[12px] leading-tight text-text-3">Written down, shared with you</div>
+            <div className="mt-0.5 text-[12px] leading-tight text-text-3">
+              <span className="hidden @min-[340px]:inline">Written down, shared with you</span>
+              <span className="@min-[340px]:hidden">Shared with you</span>
+            </div>
           </div>
           <span
-            className="inline-flex h-7 items-center rounded-full border px-2.5 text-[12px] transition-[border-color,background-color,color] duration-500"
+            className="inline-flex h-7 shrink-0 items-center rounded-full border px-2 text-[12px] transition-[border-color,background-color,color] duration-500 @sm:px-2.5"
             style={{
               borderColor: agreed ? `color-mix(in oklab, ${accent} 45%, transparent)` : "var(--line-strong)",
               background: agreed ? `color-mix(in oklab, ${accent} 14%, transparent)` : "transparent",

@@ -559,7 +559,7 @@ function Card({ cand, face, phase, resolved, reduced, onActivate }: CardProps) {
               <Question cand={cand} flagged={phase === "rejected"} />
             </div>
 
-            <div className="relative mt-4 flex items-center justify-between gap-2 text-[11.5px] font-medium">
+            <div className="relative mt-4 flex items-center justify-between gap-2 text-[11.5px] font-medium max-lg:text-[12px]">
               <span className="rounded-full px-2 py-[3px] leading-none" style={{ border: `1.5px solid ${INK}` }}>
                 AI draft
               </span>
@@ -585,7 +585,7 @@ function Card({ cand, face, phase, resolved, reduced, onActivate }: CardProps) {
             <InnerFrame />
 
             <div className="relative min-h-[62px]">
-              <p className="text-[11.5px] font-medium" style={{ color: INK_SOFT }}>
+              <p className="text-[11.5px] font-medium max-lg:text-[12px]" style={{ color: INK_SOFT }}>
                 Answer
               </p>
               {cand.lang === "en" ? (
@@ -883,7 +883,7 @@ export default function TriviaTile({ className }: { className?: string }) {
               whileHover={busy ? undefined : { y: -1 }}
               whileTap={busy ? undefined : { scale: 0.95 }}
               transition={SPRING}
-              className="relative inline-flex h-10 w-full items-center justify-center overflow-hidden rounded-full px-4 text-[13px] font-semibold @min-[18.5rem]:w-auto @min-[18.5rem]:min-w-[6.75rem] text-text transition-[background-color,box-shadow,opacity] duration-200 aria-disabled:cursor-progress"
+              className="relative inline-flex h-10 w-full items-center justify-center overflow-hidden rounded-full px-4 text-[13px] font-semibold @min-[18.5rem]:w-auto @min-[18.5rem]:min-w-[6.75rem] text-text transition-[background-color,box-shadow,opacity] duration-200 aria-disabled:cursor-progress pointer-coarse:h-11"
               style={primaryStyle}
             >
               <AnimatePresence mode="popLayout" initial={false}>
@@ -909,7 +909,7 @@ export default function TriviaTile({ className }: { className?: string }) {
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.95 }}
               transition={SPRING}
-              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full px-3.5 text-[13px] font-medium text-text @min-[18.5rem]:w-auto transition-[background-color,box-shadow] duration-200"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full px-3.5 text-[13px] font-medium text-text @min-[18.5rem]:w-auto transition-[background-color,box-shadow] duration-200 pointer-coarse:h-11"
               style={{
                 background: formal ? "rgba(212,160,59,0.14)" : "rgba(255,255,255,0.05)",
                 boxShadow: formal

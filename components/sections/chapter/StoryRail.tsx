@@ -35,11 +35,15 @@ type Props = {
   project: Project;
   beat: number;
   onPick: (i: number) => void;
+  /** Story progress 0..1: opens the beats and fills the rail. */
   pin: MotionValue<number>;
 };
 
-const para = "text-[15px] leading-[1.6] text-[#c9cbd0] [@media(min-height:860px)]:text-[16px] [@media(min-height:1000px)]:text-[17px]";
+const para =
+  "max-w-[64ch] text-[15px] leading-[1.6] text-[#c9cbd0] max-lg:text-pretty [@media(min-height:860px)]:text-[16px] [@media(min-height:1000px)]:text-[17px]";
 const bodyPad = "pb-3.5 pl-[2.6rem] pr-1 pt-0.5";
+/** Label row: a full 44px tap target on touch screens; with a mouse, desktop keeps its height-tuned rows. */
+const row = "h-11 lg:h-10 lg:pointer-coarse:h-11 lg:[@media(min-height:860px)]:h-11";
 
 /**
  * The story in three beats, stacked on a vertical rail. The open beat shows its
@@ -52,12 +56,12 @@ export default function StoryRail({ project, beat, onPick, pin }: Props) {
   const id = (k: string) => `${project.slug}-beat-${k}`;
 
   return (
-    <div className="relative">
+    <div className="relative [--dim:var(--text-3)] max-lg:[--dim:color-mix(in_oklab,var(--text-3)_74%,var(--text-2))]">
       {/* Twin: fixes the rail's height at "labels + the longest paragraph". */}
       <div aria-hidden="true" className="invisible">
         {beats.map((bt, i) => (
           <div key={bt.key}>
-            <div className="h-10 [@media(min-height:860px)]:h-11" />
+            <div className={row} />
             {i === 0 && (
               <div className={`grid ${bodyPad}`}>
                 {beats.map((x) => (
@@ -85,17 +89,17 @@ export default function StoryRail({ project, beat, onPick, pin }: Props) {
                   aria-controls={id(bt.key)}
                   aria-current={open ? "step" : undefined}
                   onClick={() => onPick(i)}
-                  className="group/beat flex h-10 w-full items-center gap-3 rounded-lg text-left [@media(min-height:860px)]:h-11"
+                  className={`group/beat flex w-full touch-manipulation items-center gap-3 rounded-lg text-left transition-opacity duration-200 [-webkit-tap-highlight-color:transparent] pointer-coarse:active:opacity-60 pointer-coarse:active:duration-75 ${row}`}
                 >
                   <span
                     className="w-7 text-[12.5px] tabular-nums transition-colors duration-500"
-                    style={{ color: open ? a : done ? "var(--text-2)" : "var(--text-3)" }}
+                    style={{ color: open ? a : done ? "var(--text-2)" : "var(--dim)" }}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
                     className={`origin-left whitespace-nowrap text-[21px] font-medium tracking-[-0.015em] transition-[transform,color] ${
-                      open ? "text-text" : "text-text-3 group-hover/beat:text-text-2"
+                      open ? "text-text" : "text-[var(--dim)] group-hover/beat:text-text-2"
                     }`}
                     style={{ transform: open ? "none" : "scale(0.74)", transitionDuration: `${DUR}ms`, transitionTimingFunction: EASE }}
                   >

@@ -2,7 +2,7 @@
 
 import { Environment, Lightformer, PerspectiveCamera } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import * as THREE from "three";
 import { Laptop, Phone } from "./devices";
 import { FOV, PHONE } from "./framing";
@@ -148,23 +148,38 @@ function Stage({ reduced, active }: { reduced: boolean; active: boolean }) {
   );
 }
 
+/** Phones and tablets (below the desktop two-column layout). */
+const COMPACT = "(max-width: 1023px)";
+function subscribeCompact(cb: () => void) {
+  const m = window.matchMedia(COMPACT);
+  m.addEventListener("change", cb);
+  return () => m.removeEventListener("change", cb);
+}
+const isCompact = () => window.matchMedia(COMPACT).matches;
+
 export default function HeroScene({ reduced = false, active = true }: { reduced?: boolean; active?: boolean }) {
   const cam = useRef<THREE.PerspectiveCamera>(null);
   const size = useThree((s) => s.size);
   const aspect = size.width / Math.max(1, size.height);
+  const compact = useSyncExternalStore(subscribeCompact, isCompact, () => false);
 
   useEffect(() => bindPointer(), []);
 
   // Seen from a little above so the pedestal reads as a stage; fitted to the view.
   const { pos, target } = useMemo(() => {
     const t = Math.tan(THREE.MathUtils.degToRad(FOV / 2));
-    const w = 2 * R + 1.7; // room for the phones as the stage turns and leans
+    // Room for the phones as the stage turns and leans with the mouse. Touch
+    // screens never lean, and on a phone every pixel of width counts, so the
+    // compact layouts frame the pedestal tighter.
+    const w = 2 * R + (compact ? 1.2 : 1.7);
     const h = 3.3;
     const dist = Math.max(h / 2 / t, w / 2 / (t * aspect)) * 1.04;
     const elev = 0.22;
-    const tgt = new THREE.Vector3(0, 1.05, 0);
+    // Compact views are width-bound with height to spare: aim a little lower so
+    // the line-up sits in the middle of its box instead of low in it.
+    const tgt = new THREE.Vector3(0, compact ? 0.6 : 1.05, 0);
     return { pos: new THREE.Vector3(0, tgt.y + Math.sin(elev) * dist, Math.cos(elev) * dist), target: tgt };
-  }, [aspect]);
+  }, [aspect, compact]);
 
   useFrame(() => {
     cam.current?.lookAt(target);

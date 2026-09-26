@@ -70,3 +70,13 @@ export const engagements: { name: string; body: string; seen: string[]; accent: 
 export const bySlug: Record<string, Project> = Object.fromEntries(projects.map((p) => [p.slug, p]));
 
 export const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * Side gutters for the section. Below lg they also clear the notch and rounded
+ * corners of a phone held sideways (the page is viewport-fit=cover).
+ */
+export const GUTTER =
+  "px-[max(1.25rem,env(safe-area-inset-left),env(safe-area-inset-right))] md:px-[max(2.5rem,env(safe-area-inset-left),env(safe-area-inset-right))] lg:px-12 2xl:px-16";
+
+/** Opens the contact brief in the right mode (Contact listens for this). */
+export const openBrief = (mode: "build" | "hire") => window.dispatchEvent(new CustomEvent("contact:mode", { detail: mode }));

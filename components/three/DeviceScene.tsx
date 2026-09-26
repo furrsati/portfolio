@@ -7,7 +7,7 @@ import { Suspense, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { Device } from "@/lib/content/projects";
 import { AppWindow, Laptop, Phone, PhoneFan, Television, type Film } from "./devices";
-import { FACE, FAN, FOV, PHONE, frame, plinthRadius, type Framing } from "./framing";
+import { FACE, FAN, FILL, FILL_COMPACT, FOV, PHONE, finePointer, frame, plinthRadius, wideLayout, type Framing } from "./framing";
 import { GLOW_LAYER, bindPointer, clamp01, easeInOut, easeOutQuart, makeLive, now, pointer, sec, span, type Live } from "./kit";
 import { Halo, Pedestal, SoftShadow } from "./Stagecraft";
 
@@ -20,7 +20,10 @@ type Props = {
   glow: [string, string];
   /** Whole chapter 0..1 (offset ["start end", "end start"]): drives the turn. */
   progress?: MotionValue<number>;
-  /** Pinned story range 0..1 (offset ["start 30%", "end end"]): drives the fan. */
+  /**
+   * Choreography 0..1: opens the fan and scrubs the film. The pinned story
+   * range on desktop; below lg, the stage's own pass through the viewport.
+   */
   pin?: MotionValue<number>;
   /** Signed max turn across the chapter, in radians (flip side is negative). */
   sweep?: number;
@@ -93,7 +96,7 @@ export default function DeviceScene({
   const base = hero ? -0.26 : -dir * FACE[device];
   // The sticky stage is on screen for roughly progress 0.1..0.9, so the scroll
   // turn reaches ±0.4·sweep there; plus pointer (0.12) and idle (0.035).
-  const amp = Math.abs(sweep) * 0.4 + (reduced ? 0.02 : 0.16);
+  const turnAmp = Math.abs(sweep) * 0.4;
   const floating = device === "phone" || device === "window";
   const shadowSize = 2 * plinthRadius(device, sides, FAN.max) + 0.1;
   const shadowFar = device === "phone" ? PHONE.lift + PHONE.h + 0.3 : device === "laptop" ? 2.4 : 3.1;
@@ -106,7 +109,7 @@ export default function DeviceScene({
   const lights = useRef<THREE.Group>(null);
   const rimA = useRef<THREE.PointLight>(null);
   const rimB = useRef<THREE.PointLight>(null);
-  const fit = useRef<{ aspect: number; f: Framing } | null>(null);
+  const fit = useRef<{ aspect: number; compact: boolean; f: Framing } | null>(null);
   const hooked = useRef(false);
   const tint = useMemo(() => [new THREE.Color(glow[0]), new THREE.Color(glow[1])], [glow]);
 
@@ -125,11 +128,16 @@ export default function DeviceScene({
     const c = cam.current;
     if (!c) return;
 
-    // Frame the composition to the view box. Only recomputed when the aspect changes.
+    // Frame the composition to the view box. Only recomputed when the aspect
+    // or the layout changes. Below lg the chapter stage is a band above the
+    // copy: the device fills more of it, and on touch screens (no pointer
+    // tilt) the frame only has to cover the scroll turn and the idle sway.
     const aspect = c.aspect > 0 ? c.aspect : 1;
-    if (!fit.current || Math.abs(fit.current.aspect - aspect) > 0.002) {
-      const f = frame(device, hero, sides, dir, aspect, [base - amp, base, base + amp]);
-      fit.current = { aspect, f };
+    const compact = !hero && !wideLayout();
+    if (!fit.current || fit.current.compact !== compact || Math.abs(fit.current.aspect - aspect) > 0.002) {
+      const amp = turnAmp + (reduced ? 0.02 : compact && !finePointer() ? 0.05 : 0.16);
+      const f = frame(device, hero, sides, dir, aspect, [base - amp, base, base + amp], compact ? FILL_COMPACT : FILL);
+      fit.current = { aspect, compact, f };
       L.spread = f.spread;
       L.plinthR = f.plinthR;
       const se = Math.sin(f.elev);

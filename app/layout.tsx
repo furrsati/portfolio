@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "Dani Zein · I build products end to end" },
 };
 
-export const viewport: Viewport = { themeColor: "#000000", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#000000", colorScheme: "dark", viewportFit: "cover", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

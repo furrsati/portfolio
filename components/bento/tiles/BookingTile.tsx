@@ -117,9 +117,12 @@ export default function BookingTile({ className }: { className?: string }) {
       title="Bookings that wait for slow payments, and never skip a step."
       className={className}
     >
-      <div className="flex flex-1 flex-col gap-4">
+      <div className="@container flex flex-1 flex-col gap-4">
         {/* The reservation */}
-        <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 px-4 py-3" style={{ background: `linear-gradient(135deg, ${GREEN}33, transparent 70%)` }}>
+        <div
+          className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 px-4 py-3 max-lg:@max-[21rem]:flex-col max-lg:@max-[21rem]:items-start max-lg:@max-[21rem]:gap-2"
+          style={{ background: `linear-gradient(135deg, ${GREEN}33, transparent 70%)` }}
+        >
           <div className="min-w-0">
             <div className="truncate text-[14px] font-medium" style={{ color: CREAM }}>
               Suite Ávila · 2 nights
@@ -161,9 +164,10 @@ export default function BookingTile({ className }: { className?: string }) {
                     transition={reduced ? { duration: 0 } : { duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                   />
                 </div>
-                <span className={`flex items-center gap-1 text-[11.5px] leading-tight ${now ? "text-text" : "text-text-3"}`} aria-current={now ? "step" : undefined}>
-                  {done && <Check className="h-3 w-3 shrink-0" style={{ color: "#7FD1A8" }} aria-hidden="true" />}
-                  {now && s.id === "review" && <Clock className="h-3 w-3 shrink-0" style={{ color: GOLD }} aria-hidden="true" />}
+                <span className={`flex items-center gap-1 text-[11.5px] leading-tight max-lg:text-[12px] ${now ? "text-text" : "text-text-3"}`} aria-current={now ? "step" : undefined}>
+                  {/* Narrow tile: the bar above already marks the step, and the label needs the whole column. */}
+                  {done && <Check className="h-3 w-3 shrink-0 max-lg:@max-[21rem]:hidden" style={{ color: "#7FD1A8" }} aria-hidden="true" />}
+                  {now && s.id === "review" && <Clock className="h-3 w-3 shrink-0 max-lg:@max-[21rem]:hidden" style={{ color: GOLD }} aria-hidden="true" />}
                   {s.label}
                 </span>
               </li>
@@ -186,14 +190,20 @@ export default function BookingTile({ className }: { className?: string }) {
                   exit={reduced ? undefined : { opacity: 0, scale: 0.94 }}
                   transition={SPRING}
                   onClick={() => run(a.id)}
-                  className="inline-flex h-10 items-center gap-2 rounded-full px-4 text-[13px] font-medium transition-colors"
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-[13px] font-medium transition-colors pointer-coarse:h-11 max-lg:@max-[21rem]:grow max-lg:@max-[21rem]:px-3.5"
                   style={
                     a.tone === "bad"
                       ? { color: RED, border: `1px solid ${RED}55`, background: `${RED}10` }
                       : { color: "#161310", background: GOLD }
                   }
                 >
-                  {a.tone === "bad" ? <Ban className="h-3.5 w-3.5" aria-hidden="true" /> : <Send className="h-3.5 w-3.5" aria-hidden="true" />}
+                  {/* On a narrow tile the labels need the room: every pair of actions stays on one row. */}
+                  {a.tone === "bad" ? (
+                    <Ban className="h-3.5 w-3.5 max-lg:@max-[21rem]:hidden" aria-hidden="true" />
+                  ) : (
+                    <Send className="h-3.5 w-3.5 max-lg:@max-[21rem]:hidden" aria-hidden="true" />
+                  )}
                   {a.label}
                 </motion.button>
               ))}
@@ -206,10 +216,13 @@ export default function BookingTile({ className }: { className?: string }) {
           transition={{ duration: 0.45 }}
           className="mt-auto rounded-2xl border border-white/[0.08] bg-black/30 p-3"
         >
-          <div className="mb-2 flex items-center gap-1.5 text-[11.5px] text-text-3">
+          <div className="mb-2 flex items-center gap-1.5 text-[11.5px] text-text-3 max-lg:text-[12px]">
             <Mail className="h-3 w-3" aria-hidden="true" /> Audit log
           </div>
-          <ul className="flex flex-col gap-1.5" aria-live="polite">
+          <ul
+            className="flex flex-col gap-1.5 max-lg:min-h-[5.25rem] max-lg:@max-[26rem]:h-28 max-lg:@max-[26rem]:overflow-hidden max-lg:@max-[26rem]:[mask-image:linear-gradient(to_bottom,#000_calc(100%-1.5rem),transparent)]"
+            aria-live="polite"
+          >
             <AnimatePresence initial={false}>
               {log.map((l) => (
                 <motion.li
@@ -219,7 +232,7 @@ export default function BookingTile({ className }: { className?: string }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={SPRING}
-                  className="flex items-start gap-2 font-code text-[11.5px] leading-snug"
+                  className="flex items-start gap-2 font-code text-[11.5px] leading-snug max-lg:text-[12px]"
                   style={{ color: l.tone === "bad" ? RED : l.tone === "ok" ? "#9FE0BD" : "var(--text-2)" }}
                 >
                   <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: "currentColor" }} aria-hidden="true" />

@@ -160,7 +160,7 @@ function ShrinkDemo({ reduced, demo }: { reduced: boolean; demo: boolean }) {
           whileHover={{ y: -1 }}
           whileTap={{ scale: 0.95 }}
           transition={SPRING}
-          className="relative inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-[13px] font-medium text-text transition-colors duration-200"
+          className="relative inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-[13px] font-medium text-text transition-colors duration-200 pointer-coarse:h-11"
           style={{
             background: shrunk ? "rgba(255,191,63,0.14)" : "rgba(255,255,255,0.05)",
             boxShadow: shrunk
@@ -275,7 +275,7 @@ function ShrinkDemo({ reduced, demo }: { reduced: boolean; demo: boolean }) {
                     initial={{ opacity: 0, scale: 0.6, y: 3 }}
                     animate={{ opacity: 1, scale: 1, y: 0, transition: { ...SPRING, delay: reduced ? 0 : 0.5 } }}
                     exit={{ opacity: 0, scale: 0.7, transition: { duration: 0.12 } }}
-                    className="whitespace-nowrap rounded-full bg-[#0a0b0d] px-1.5 py-[3px] text-[11px] font-medium leading-none"
+                    className="whitespace-nowrap rounded-full bg-[#0a0b0d] px-1.5 py-[3px] text-[11px] font-medium leading-none max-lg:text-[12px]"
                     style={{ color: AMBER, boxShadow: "inset 0 0 0 1px rgba(255,191,63,0.4)" }}
                   >
                     {SAVED_PCT}% smaller
@@ -755,7 +755,7 @@ function OtaDemo({ reduced, demo }: { reduced: boolean; demo: boolean }) {
             whileHover={busy ? undefined : { y: -1 }}
             whileTap={busy ? undefined : { scale: 0.96 }}
             transition={SPRING}
-            className="relative mt-auto inline-flex h-10 w-full items-center justify-center overflow-hidden rounded-full px-4 text-[13px] font-medium text-black aria-disabled:cursor-progress"
+            className="relative mt-auto inline-flex h-10 w-full items-center justify-center overflow-hidden rounded-full px-4 text-[13px] font-medium text-black aria-disabled:cursor-progress pointer-coarse:h-11"
             style={{
               background: "linear-gradient(180deg, #FFD684, #FFBF3F)",
               boxShadow: "inset 0 1px 0 rgba(255,255,255,0.55), 0 8px 24px -10px rgba(255,191,63,0.85)",
@@ -808,7 +808,7 @@ function OtaDemo({ reduced, demo }: { reduced: boolean; demo: boolean }) {
         type="button"
         aria-pressed={broken}
         onClick={toggleBreak}
-        className="group mt-1 flex min-h-10 w-full items-center justify-between gap-3 rounded-xl text-left text-[13px]"
+        className="group mt-1 flex min-h-10 w-full items-center justify-between gap-3 rounded-xl text-left text-[13px] pointer-coarse:min-h-11"
       >
         <span
           className={broken ? "" : "text-text-2 transition-colors group-hover:text-text"}

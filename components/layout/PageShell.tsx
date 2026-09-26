@@ -47,10 +47,11 @@ export default function PageShell() {
         <Process />
         <Contact />
       </main>
-      <footer className="relative z-[2] border-t border-line px-5 py-10 text-[14px] text-text-3 md:px-10 lg:px-16">
-        <div className="mx-auto flex max-w-[1500px] flex-wrap items-center justify-between gap-4">
-          <span>Dani Zein, full-stack developer. Lebanon, working worldwide.</span>
-          <span>© 2026</span>
+      {/* Clears the home indicator and, in landscape, the notch (the page is viewport-fit=cover) */}
+      <footer className="relative z-[2] border-t border-line px-[max(1.25rem,env(safe-area-inset-left),env(safe-area-inset-right))] pb-[max(2.5rem,calc(env(safe-area-inset-bottom)_+_1.5rem))] pt-10 text-[14px] leading-[1.5] text-text-3 md:px-[max(2.5rem,env(safe-area-inset-left),env(safe-area-inset-right))] lg:px-16">
+        <div className="mx-auto flex max-w-[1500px] flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <span className="text-balance">Dani Zein, full-stack developer. Lebanon, working worldwide.</span>
+          <span className="tabular-nums">© 2026</span>
         </div>
       </footer>
       <CommandPalette open={palette} onClose={() => setPalette(false)} />

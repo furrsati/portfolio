@@ -597,7 +597,7 @@ export default function CutoverTile({ className }: { className?: string }) {
               onClick={() => setUserPlaying(!playing)}
               whileTap={{ scale: 0.94 }}
               transition={SPRING}
-              className="inline-flex h-10 shrink-0 items-center gap-2 px-3.5 text-[13px] text-text-2 transition-colors hover:text-text"
+              className="inline-flex h-10 shrink-0 items-center gap-2 px-3.5 text-[13px] text-text-2 transition-colors hover:text-text pointer-coarse:h-11"
               style={{
                 borderRadius: 999,
                 background: "rgba(255, 255, 255, 0.03)",
@@ -870,7 +870,7 @@ export default function CutoverTile({ className }: { className?: string }) {
                             </span>
                             <span className="whitespace-nowrap text-[12px] text-text-3">{srv.detail}</span>
                           </p>
-                          <p className="mt-1.5 flex items-center gap-1.5 text-[11.5px] leading-none">
+                          <p className="mt-1.5 flex items-center gap-1.5 text-[11.5px] leading-none max-lg:text-[12px]">
                             <span className="relative h-[7px] w-[7px] shrink-0" aria-hidden="true">
                               <span
                                 ref={(el) => {
@@ -1015,7 +1015,7 @@ export default function CutoverTile({ className }: { className?: string }) {
               whileHover={onNext ? { y: -1 } : undefined}
               whileTap={onNext ? { scale: 0.95 } : undefined}
               transition={SPRING}
-              className={`inline-flex h-10 shrink-0 items-center gap-2 px-4 text-[13px] font-medium transition-colors duration-200 ${
+              className={`inline-flex h-10 shrink-0 items-center gap-2 px-4 text-[13px] font-medium transition-colors duration-200 pointer-coarse:h-11 ${
                 onNext ? "text-text" : "cursor-not-allowed text-text-3"
               }`}
               style={{

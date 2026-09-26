@@ -94,7 +94,7 @@ const IN_RADIUS: CSSProperties = {
 };
 
 function textClass(text: string) {
-  return ARABIC.test(text) ? "font-arabic text-[12.5px] leading-[1.35]" : "text-[11.5px] leading-[1.3]";
+  return ARABIC.test(text) ? "font-arabic text-[12.5px] leading-[1.35]" : "text-[11.5px] leading-[1.3] max-lg:text-[12px]";
 }
 
 function StaticBubble({ own, children }: { own: boolean; children: string }) {
@@ -393,7 +393,7 @@ function Composer({
     <div className="shrink-0 px-1.5 pt-1">
       <div
         data-typing={typing ? "on" : undefined}
-        className="relative h-10 rounded-full bg-white/[0.06] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] transition-shadow duration-200 focus-within:shadow-[inset_0_0_0_1px_rgba(250,162,27,0.7),0_0_0_3px_rgba(250,162,27,0.16)] data-[typing=on]:shadow-[inset_0_0_0_1px_rgba(250,162,27,0.7),0_0_0_3px_rgba(250,162,27,0.16)]"
+        className="relative h-10 rounded-full bg-white/[0.06] pointer-coarse:h-11 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] transition-shadow duration-200 focus-within:shadow-[inset_0_0_0_1px_rgba(250,162,27,0.7),0_0_0_3px_rgba(250,162,27,0.16)] data-[typing=on]:shadow-[inset_0_0_0_1px_rgba(250,162,27,0.7),0_0_0_3px_rgba(250,162,27,0.16)]"
       >
         <label htmlFor={inputId} className="sr-only">
           Message
@@ -416,7 +416,7 @@ function Composer({
             aria-describedby={hintId}
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={onKeyDown}
-            className={`absolute left-0 top-1/2 h-[53.333px] w-[133.333%] origin-left -translate-y-1/2 scale-75 bg-transparent pl-4 pr-[58px] text-[16px] placeholder:text-[#8d9097] focus-visible:outline-none ${
+            className={`absolute left-0 top-1/2 h-[53.333px] w-[133.333%] origin-left -translate-y-1/2 scale-75 bg-transparent pl-4 pr-[58px] text-[16px] pointer-coarse:h-[58.667px] placeholder:text-[#8d9097] focus-visible:outline-none ${
               typing ? "text-transparent" : "text-text"
             } ${arabic ? "font-arabic" : ""}`}
           />
@@ -424,7 +424,7 @@ function Composer({
           {typing && (
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute left-0 top-1/2 h-[53.333px] w-[133.333%] origin-left -translate-y-1/2 scale-75 pl-4 pr-[58px] text-[16px]"
+              className="pointer-events-none absolute left-0 top-1/2 h-[53.333px] w-[133.333%] origin-left -translate-y-1/2 scale-75 pl-4 pr-[58px] text-[16px] pointer-coarse:h-[58.667px]"
             >
               <div className="flex h-full items-center justify-end overflow-hidden">
                 <div className="flex min-w-full flex-none items-center whitespace-pre text-text">
@@ -450,7 +450,7 @@ function Composer({
           whileHover={{ scale: 1.07 }}
           whileTap={{ scale: 0.86 }}
           transition={SPRING}
-          className="absolute right-0 top-0 grid h-10 w-10 place-items-center"
+          className="absolute right-0 top-0 grid h-10 w-10 place-items-center pointer-coarse:h-11 pointer-coarse:w-11"
           // Inline so it wins over the global :focus-visible ring: keep that ring round and hugging the button.
           style={{ borderRadius: 9999, outlineOffset: -3 }}
         >
@@ -654,7 +654,7 @@ function Wire({
         <DbNode state={db} armed={armed} runId={runId} reduced={reduced} />
       </div>
       <span
-        className={`absolute whitespace-nowrap text-[10.5px] leading-none transition-colors duration-200 ${
+        className={`absolute whitespace-nowrap text-[10.5px] leading-none transition-colors duration-200 max-lg:text-[12px] ${
           x ? "left-1/2 top-[35px] -translate-x-1/2" : "left-[calc(50%+26px)] top-1/2 -translate-y-1/2"
         }`}
         style={{ color: labelColor }}
@@ -985,7 +985,7 @@ export default function RealtimeTile({ className }: { className?: string }) {
             type="button"
             aria-pressed={crash}
             onClick={toggleCrash}
-            className="group mt-1 flex min-h-10 w-full items-center justify-between gap-3 rounded-xl text-left text-[13px]"
+            className="group mt-1 flex min-h-10 w-full items-center justify-between gap-3 rounded-xl text-left text-[13px] pointer-coarse:min-h-11"
           >
             <span
               className={crash ? "" : "text-text-2 transition-colors group-hover:text-text"}

@@ -23,7 +23,31 @@ export const ELEV: Record<Device, number> = { phone: 0.15, laptop: 0.27, tv: 0.1
 export const FACE: Record<Device, number> = { phone: 0.12, laptop: 0.22, tv: 0.16, window: 0.12 };
 
 export const FOV = 30;
-const FILL = 0.8; // content fills 80% of the box: ~10% breathing room each side
+/** Content fills 80% of the box: ~10% breathing room each side. */
+export const FILL = 0.8;
+/**
+ * Below lg the chapter stage is a full-bleed band above the copy, not a pinned
+ * column, so the device can fill more of it (still ~6% clear of each edge).
+ */
+export const FILL_COMPACT = 0.88;
+
+/**
+ * True when the chapters use the pinned two-column layout (Tailwind's lg,
+ * 64rem and up). Read at event and frame time only, never during render.
+ */
+let wideQuery: MediaQueryList | null = null;
+export function wideLayout() {
+  if (typeof window === "undefined") return true;
+  wideQuery ??= window.matchMedia("(min-width: 64rem)");
+  return wideQuery.matches;
+}
+/** A mouse or trackpad drives the pointer tilt (touch never does). */
+let fineQuery: MediaQueryList | null = null;
+export function finePointer() {
+  if (typeof window === "undefined") return true;
+  fineQuery ??= window.matchMedia("(hover: hover) and (pointer: fine)");
+  return fineQuery.matches;
+}
 
 type V3 = [number, number, number];
 
@@ -120,7 +144,7 @@ export type Framing = {
   haloBack: number;
 };
 
-function solve(dyn: V3[], stat: V3[], yaws: number[], elev: number, aspect: number) {
+function solve(dyn: V3[], stat: V3[], yaws: number[], elev: number, aspect: number, fill: number) {
   const tY = Math.tan(((FOV / 2) * Math.PI) / 180);
   const tX = tY * aspect;
   const se = Math.sin(elev);
@@ -157,7 +181,7 @@ function solve(dyn: V3[], stat: V3[], yaws: number[], elev: number, aspect: numb
   for (let pass = 0; pass < 3; pass++) {
     dist = 0;
     for (let i = 0; i < xs.length; i++) {
-      dist = Math.max(dist, zs[i] + Math.abs(xs[i] - cx) / (FILL * tX), zs[i] + Math.abs(ys[i] - cy) / (FILL * tY));
+      dist = Math.max(dist, zs[i] + Math.abs(xs[i] - cx) / (fill * tX), zs[i] + Math.abs(ys[i] - cy) / (fill * tY));
     }
     let u0 = Infinity;
     let u1 = -Infinity;
@@ -178,14 +202,22 @@ function solve(dyn: V3[], stat: V3[], yaws: number[], elev: number, aspect: numb
 
 /**
  * Frame the whole composition (device at every yaw it can reach, fan fully
- * open, pedestal) so it fits the view box at this aspect with ~10% margin.
+ * open, pedestal) so it fits the view box at this aspect, filling `fill` of it.
  */
-export function frame(device: Device, hero: boolean, sides: number, sideDir: number, aspect: number, yaws: number[]): Framing {
+export function frame(
+  device: Device,
+  hero: boolean,
+  sides: number,
+  sideDir: number,
+  aspect: number,
+  yaws: number[],
+  fill = FILL,
+): Framing {
   const elev = hero ? 0.04 : ELEV[device];
   const build = (spread: number) => {
     const plinthR = hero ? 0 : plinthRadius(device, sides, spread);
     const stat = hero ? [] : [...ring(plinthR + 0.06, 0), ...ring(plinthR * 1.16, -PLINTH.t * 0.5 * plinthR)];
-    return { plinthR, r: solve(devicePoints(device, hero, sides, sideDir, spread), stat, yaws, elev, aspect) };
+    return { plinthR, r: solve(devicePoints(device, hero, sides, sideDir, spread), stat, yaws, elev, aspect, fill) };
   };
   let spread = FAN.max;
   let best = build(spread);

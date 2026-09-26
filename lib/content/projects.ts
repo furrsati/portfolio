@@ -216,7 +216,7 @@ export const projects: Project[] = [
     stack: ["Next.js", "Postgres", "Drizzle", "Neon", "Puppeteer", "Vercel"],
     glow: ["#C88A3D", "#2E6B55"],
     device: "laptop",
-    screens: ["/work/altamira-hero.jpg", "/work/altamira-room.jpg"],
+    screens: ["/work/altamira-1.jpg", "/work/altamira-2.jpg", "/work/altamira-3.jpg"],
     links: [],
   },
   {

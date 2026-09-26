@@ -198,26 +198,54 @@ export function FloatingHighlights({
   );
 }
 
-/** Below lg: the same cards as a horizontal snap row. */
+/**
+ * Below lg: the same cards. Phones swipe through them (the next card peeks in
+ * and a pager tracks the position); tablets and phones held sideways have the
+ * width to show all three side by side.
+ */
 export function HighlightRow({ project }: { project: Project }) {
   const a = project.glow[0];
+  const n = project.highlights.length;
+  const [at, setAt] = useState(0);
+  const onScroll = (e: React.UIEvent<HTMLUListElement>) => {
+    const el = e.currentTarget;
+    const cards = el.children;
+    if (cards.length < 2) return;
+    const step = (cards[1] as HTMLElement).offsetLeft - (cards[0] as HTMLElement).offsetLeft;
+    const end = el.scrollLeft >= el.scrollWidth - el.clientWidth - 2;
+    const i = end ? n - 1 : Math.min(n - 1, Math.max(0, Math.round(el.scrollLeft / step)));
+    if (i !== at) setAt(i);
+  };
   return (
-    <ul
-      aria-label={`${project.name} highlights`}
-      className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] md:-mx-10 md:scroll-px-10 md:px-10 lg:hidden [&::-webkit-scrollbar]:hidden"
-    >
-      {project.highlights.map((h) => (
-        <li
-          key={h.title}
-          className="w-[76%] max-w-[300px] shrink-0 snap-start rounded-[20px] border border-line bg-white/[0.025] p-4 sm:w-[46%]"
-        >
-          <div className="flex items-center gap-3">
-            <Icon h={h} a={a} size="sm" />
-            <h3 className="text-[14.5px] font-medium leading-[1.25] text-text">{h.title}</h3>
-          </div>
-          <p className="mt-2.5 text-[13px] leading-[1.5] text-text-2">{h.body}</p>
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul
+        aria-label={`${project.name} highlights`}
+        onScroll={onScroll}
+        className="-ml-[var(--gl)] -mr-[var(--gr)] flex snap-x snap-mandatory scroll-pl-[var(--gl)] gap-3 overflow-x-auto overscroll-x-contain pb-1 pl-[var(--gl)] pr-[var(--gr)] [scrollbar-width:none] md:m-0 md:grid md:grid-cols-3 md:overflow-visible md:p-0 lg:hidden [&::-webkit-scrollbar]:hidden"
+      >
+        {project.highlights.map((h) => (
+          <li
+            key={h.title}
+            className="w-[76%] max-w-[300px] shrink-0 snap-start snap-always rounded-[20px] border border-line bg-white/[0.025] p-4 md:w-auto md:max-w-none"
+          >
+            <div className="flex items-center gap-3">
+              <Icon h={h} a={a} size="sm" />
+              <h3 className="text-balance text-[15px] font-medium leading-[1.25] text-text">{h.title}</h3>
+            </div>
+            <p className="mt-2.5 text-pretty text-[14px] leading-[1.5] text-text-2">{h.body}</p>
+          </li>
+        ))}
+      </ul>
+      {/* Pager: says there is more to swipe, and where you are in it */}
+      <div aria-hidden="true" className="mt-3 flex items-center gap-1.5 md:hidden">
+        {project.highlights.map((h, k) => (
+          <span
+            key={h.title}
+            className="h-1 rounded-full transition-[width,background-color] duration-300 ease-out"
+            style={{ width: k === at ? 18 : 6, background: k === at ? a : "rgba(255,255,255,0.2)" }}
+          />
+        ))}
+      </div>
+    </>
   );
 }

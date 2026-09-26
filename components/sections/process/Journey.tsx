@@ -3,16 +3,22 @@
 import { motion, useInView, useMotionValueEvent, useScroll } from "framer-motion";
 import { Mouse } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { EASE, stepAt, stepStarts, steps } from "./data";
+import { EASE, GUTTER, stepAt, stepStarts, steps } from "./data";
 import Rail, { Node } from "./Rail";
 import Stage from "./Stage";
 import { useReducedSafe } from "./usePhases";
 
-/** Below lg: one step at a time, each with its own stage that plays as it scrolls into view. */
+/**
+ * Below lg: one step at a time, each with its own stage that plays as it
+ * scrolls into view. Visibility is measured against a band of the viewport
+ * rather than a share of the step, so a step taller than the screen (a phone
+ * held sideways) still plays.
+ */
 function MobileStep({ i, reduced }: { i: number; reduced: boolean }) {
   const ref = useRef<HTMLLIElement>(null);
-  const seen = useInView(ref, { amount: 0.3, once: true });
-  const play = useInView(ref, { amount: 0.5 });
+  const stage = useRef<HTMLDivElement>(null);
+  const seen = useInView(ref, { once: true, margin: "0px 0px -30% 0px" });
+  const play = useInView(stage, { margin: "-20% 0px -20% 0px" });
   const s = steps[i];
   return (
     <li ref={ref} className="relative">
@@ -20,8 +26,8 @@ function MobileStep({ i, reduced }: { i: number; reduced: boolean }) {
         <Node i={i} state={play ? "now" : seen ? "done" : "todo"} reduced={reduced} />
         <h3 className="text-[26px] font-medium leading-none tracking-[-0.02em] text-text">{s.name}</h3>
       </div>
-      <p className="mt-3 max-w-[52ch] text-[16px] leading-[1.6] text-text-2">{s.body}</p>
-      <div className="mt-6">
+      <p className="mt-3 max-w-[52ch] text-pretty text-[16px] leading-[1.6] text-text-2">{s.body}</p>
+      <div ref={stage} className="mt-6">
         <Stage step={i} play={play} reduced={reduced} single />
       </div>
     </li>
@@ -73,8 +79,8 @@ export default function Journey() {
     <>
       {/* Pulled up by the nav's anchor offset, so "How I work" lands exactly where the pin starts */}
       <div ref={track} className="relative lg:-mt-20 lg:h-[330vh]">
-        <div ref={frame} className="relative lg:sticky lg:top-0 lg:h-screen lg:min-h-[640px]">
-          <div className="mx-auto grid h-full max-w-[1500px] grid-cols-1 px-5 pt-28 md:px-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:items-center lg:gap-12 lg:px-12 lg:pb-7 lg:pt-[92px] xl:gap-16 2xl:px-16">
+        <div ref={frame} className="relative lg:sticky lg:top-0 lg:h-svh lg:min-h-[640px]">
+          <div className={`mx-auto grid h-full max-w-[1500px] grid-cols-1 pt-28 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:items-center lg:gap-12 lg:pb-7 lg:pt-[92px] xl:gap-16 ${GUTTER}`}>
             <div className="flex min-w-0 flex-col lg:max-w-[520px]">
               <div className="overflow-hidden pb-1">
                 <motion.h2
@@ -82,7 +88,7 @@ export default function Journey() {
                   initial={{ y: "105%" }}
                   animate={entered || reduced ? { y: 0 } : undefined}
                   transition={reduced ? { duration: 0 } : { duration: 0.9, ease: EASE }}
-                  className="text-[clamp(2.75rem,min(5.4vw,8.6vh),5.75rem)] font-semibold leading-[0.95] tracking-[-0.035em] [font-variation-settings:'wdth'_80,'opsz'_96]"
+                  className="text-[clamp(2.75rem,min(5.4vw,8.6svh),5.75rem)] font-semibold leading-[0.95] tracking-[-0.035em] [font-variation-settings:'wdth'_80,'opsz'_96]"
                 >
                   How I work
                 </motion.h2>
@@ -91,7 +97,7 @@ export default function Journey() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={entered || reduced ? { opacity: 1, y: 0 } : undefined}
                 transition={reduced ? { duration: 0 } : { duration: 0.9, ease: EASE, delay: 0.12 }}
-                className="mt-[clamp(0.9rem,2vh,1.4rem)] max-w-[44ch] text-[clamp(1.05rem,min(1.4vw,2.3vh),1.25rem)] leading-[1.45] text-text-2"
+                className="mt-[clamp(0.9rem,2svh,1.4rem)] max-w-[44ch] text-pretty text-[clamp(1.05rem,min(1.4vw,2.3svh),1.25rem)] leading-[1.45] text-text-2"
               >
                 One accountable person from the first call to launch day. You always know what’s done, what’s next and what it costs.
               </motion.p>
@@ -100,10 +106,10 @@ export default function Journey() {
                 initial={{ opacity: 0, y: 18 }}
                 animate={entered || reduced ? { opacity: 1, y: 0 } : undefined}
                 transition={reduced ? { duration: 0 } : { duration: 1, ease: EASE, delay: 0.24 }}
-                className="mt-[clamp(1.5rem,4.2vh,2.75rem)] hidden lg:block"
+                className="mt-[clamp(1.5rem,4.2svh,2.75rem)] hidden lg:block"
               >
                 <Rail step={step} onPick={pick} pin={pin} reduced={reduced} />
-                <p className="mt-[clamp(0.75rem,2vh,1.5rem)] flex items-center gap-2 text-[13px] text-text-3">
+                <p className="mt-[clamp(0.75rem,2svh,1.5rem)] flex items-center gap-2 text-[13px] text-text-3">
                   <Mouse className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden="true" />
                   Scroll to walk through it, or pick a step.
                 </p>
@@ -115,7 +121,7 @@ export default function Journey() {
               initial={{ opacity: 0, y: 40, scale: 0.97 }}
               animate={entered || reduced ? { opacity: 1, y: 0, scale: 1 } : undefined}
               transition={reduced ? { duration: 0 } : { duration: 1.1, ease: EASE, delay: 0.18 }}
-              className="relative hidden h-[clamp(470px,calc(100vh-150px),680px)] lg:block"
+              className="relative hidden h-[clamp(470px,calc(100svh-150px),680px)] lg:block"
             >
               <Stage step={step} play={stageLive} reduced={reduced} />
             </motion.div>
@@ -123,7 +129,7 @@ export default function Journey() {
         </div>
       </div>
 
-      <ol aria-label="How a project runs" className="mx-auto mt-12 flex max-w-[1500px] flex-col gap-16 px-5 md:px-10 lg:hidden">
+      <ol aria-label="How a project runs" className={`mx-auto mt-12 flex max-w-[1500px] flex-col gap-16 lg:hidden ${GUTTER}`}>
         {steps.map((s, i) => (
           <MobileStep key={s.key} i={i} reduced={reduced} />
         ))}

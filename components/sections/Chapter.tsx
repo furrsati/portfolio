@@ -1,18 +1,40 @@
 "use client";
 
 import { View } from "@react-three/drei";
-import { motion, useInView, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion, useInView, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { useRef, useState, useSyncExternalStore } from "react";
 import DeviceScene from "@/components/three/DeviceScene";
+import { wideLayout } from "@/components/three/framing";
 import type { Project } from "@/lib/content/projects";
 import Backdrop from "./chapter/Backdrop";
 import { FloatingHighlights, HighlightRow } from "./chapter/Highlights";
-import { Craft, Links, MetaRow } from "./chapter/parts";
+import { Craft, Links, MetaRow, faint } from "./chapter/parts";
 import StoryRail, { beatAt, beats } from "./chapter/StoryRail";
 
+/**
+ * prefers-reduced-motion, hydration-safe: the server and the hydrating render
+ * both see `false`, then React re-renders with the real preference. (framer's
+ * useReducedMotion answers on the first client render, so reduced-motion
+ * visitors got a server/client mismatch on every chapter.)
+ */
+const REDUCE = "(prefers-reduced-motion: reduce)";
+const onReduceChange = (cb: () => void) => {
+  const m = window.matchMedia(REDUCE);
+  m.addEventListener("change", cb);
+  return () => m.removeEventListener("change", cb);
+};
+const useReduced = () =>
+  useSyncExternalStore(
+    onReduceChange,
+    () => window.matchMedia(REDUCE).matches,
+    () => false,
+  );
+
 export default function Chapter({ project, n, total, flip }: { project: Project; n: number; total: number; flip: boolean }) {
-  const reduced = useReducedMotion() ?? false;
+  const reduced = useReduced();
   const section = useRef<HTMLElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const rail = useRef<HTMLDivElement>(null);
   const inView = useInView(section, { amount: 0.25, once: true });
   // Mount the 3D scene the first time the chapter comes within a screen of the
   // viewport, then keep it: offscreen Views are skipped by the renderer, and
@@ -25,18 +47,32 @@ export default function Chapter({ project, n, total, flip }: { project: Project;
   const { scrollYProgress } = useScroll({ target: section, offset: ["start end", "end start"] });
   // Pinned-range progress: the story beats, the rail and the device choreography.
   const { scrollYProgress: pin } = useScroll({ target: section, offset: ["start 30%", "end end"] });
+  // Below lg nothing pins: the device sits in a band above the copy. There the
+  // beats follow the rail's own trip up the screen (each opens while it is in
+  // easy reading reach), and the device plays out while its stage crosses the
+  // viewport (fan opens as it rises into view, the film scrubs through).
+  const { scrollYProgress: railPass } = useScroll({ target: rail, offset: ["start 80%", "end 35%"] });
+  const { scrollYProgress: stagePass } = useScroll({ target: stage, offset: ["start end", "end start"] });
+  const story = useTransform([pin, railPass], ([p, r]: number[]) => (wideLayout() ? p : r));
+  const drive = useTransform([pin, stagePass], ([p, s]: number[]) => (wideLayout() ? p : Math.min(1, Math.max(0, (s - 0.15) / 0.7))));
   const [auto, setAuto] = useState(0);
+  const [shot, setShot] = useState(0);
   const [manual, setManual] = useState<number | null>(null);
-  useMotionValueEvent(pin, "change", (v) => {
+  useMotionValueEvent(story, "change", (v) => {
     const step = beatAt(v);
     if (step !== auto) {
       setAuto(step);
       setManual(null);
     }
   });
+  // The device's own beat: the story's on desktop (same progress), its stage's below lg.
+  useMotionValueEvent(drive, "change", (v) => {
+    const step = beatAt(v);
+    if (step !== shot) setShot(step);
+  });
   const beat = manual ?? auto;
   // Spread the screens across the three beats: first screen on the challenge, last on the result.
-  const screen = Math.round((beat * (project.screens.length - 1)) / (beats.length - 1));
+  const screen = Math.round(((manual ?? shot) * (project.screens.length - 1)) / (beats.length - 1));
   const a = project.glow[0];
 
   return (
@@ -44,8 +80,10 @@ export default function Chapter({ project, n, total, flip }: { project: Project;
       {near && <Backdrop section={section} project={project} flip={flip} progress={scrollYProgress} reduced={reduced} />}
 
       <div className="relative lg:sticky lg:top-0 lg:h-screen">
+        {/* Side gutters as variables (the stage and the card row bleed through
+            them below lg), clear of the notch on phones held sideways. */}
         <div
-          className={`mx-auto grid h-full max-w-[1500px] grid-cols-1 gap-7 px-5 pb-16 pt-14 md:px-10 lg:grid-rows-[minmax(0,1fr)] lg:gap-10 lg:px-12 lg:pb-6 lg:pt-[88px] xl:gap-14 2xl:px-16 ${
+          className={`mx-auto grid h-full max-w-[1500px] grid-cols-1 gap-7 pb-16 pl-[var(--gl)] pr-[var(--gr)] pt-14 [--gl:max(1.25rem,env(safe-area-inset-left))] [--gr:max(1.25rem,env(safe-area-inset-right))] md:[--gl:max(2.5rem,env(safe-area-inset-left))] md:[--gr:max(2.5rem,env(safe-area-inset-right))] lg:grid-rows-[minmax(0,1fr)] lg:gap-10 lg:pb-6 lg:pt-[88px] lg:[--gl:3rem] lg:[--gr:3rem] xl:gap-14 2xl:[--gl:4rem] 2xl:[--gr:4rem] ${
             flip
               ? "lg:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]"
               : "lg:grid-cols-2 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)]"
@@ -81,18 +119,18 @@ export default function Chapter({ project, n, total, flip }: { project: Project;
                   {project.name}
                 </span>
                 {project.nameAr && (
-                  <span lang="ar" dir="rtl" className="font-arabic text-[0.4em] font-medium tracking-normal text-text-3">
+                  <span lang="ar" dir="rtl" className={`font-arabic text-[0.4em] font-medium tracking-normal ${faint}`}>
                     {project.nameAr}
                   </span>
                 )}
               </motion.h2>
             </div>
-            <p className="mt-[clamp(0.6rem,1.4vh,1rem)] max-w-[40ch] text-[clamp(1.08rem,min(1.4vw,2.3vh),1.3rem)] leading-[1.38] text-text">
+            <p className="mt-[clamp(0.6rem,1.4vh,1rem)] max-w-[40ch] text-[clamp(1.08rem,min(1.4vw,2.3vh),1.3rem)] leading-[1.38] text-text max-lg:text-pretty">
               {project.headline}
             </p>
 
-            <div className="mt-[clamp(1.25rem,3.2vh,2.4rem)]">
-              <StoryRail project={project} beat={beat} onPick={setManual} pin={pin} />
+            <div ref={rail} className="mt-[clamp(1.25rem,3.2vh,2.4rem)]">
+              <StoryRail project={project} beat={beat} onPick={setManual} pin={story} />
             </div>
 
             <div className="mt-5 lg:hidden">
@@ -105,9 +143,13 @@ export default function Chapter({ project, n, total, flip }: { project: Project;
             </div>
           </div>
 
-          {/* Stage: the device, with the highlights floating around it on desktop */}
+          {/* Stage: the device, with the highlights floating around it on desktop.
+              Below lg a full-bleed band about as tall as the screen is wide;
+              on a phone held sideways, short enough to sit whole under the nav.
+              Small viewport units, so it never jumps with the URL bar. */}
           <div
-            className={`relative order-1 h-[52svh] min-h-[340px] lg:h-auto lg:max-h-full lg:min-h-0 lg:w-full lg:self-center lg:aspect-[0.86] ${
+            ref={stage}
+            className={`relative order-1 -ml-[var(--gl)] -mr-[var(--gr)] h-[max(min(52svh,100vw),min(340px,100svh_-_6rem))] lg:ml-0 lg:mr-0 lg:h-auto lg:max-h-full lg:min-h-0 lg:w-full lg:self-center lg:aspect-[0.86] ${
               flip ? "lg:order-1" : "lg:order-2"
             }`}
           >
@@ -120,7 +162,7 @@ export default function Chapter({ project, n, total, flip }: { project: Project;
                   index={screen}
                   glow={project.glow}
                   progress={scrollYProgress}
-                  pin={pin}
+                  pin={drive}
                   sweep={flip ? -0.45 : 0.45}
                   enter={inView}
                   reduced={reduced}

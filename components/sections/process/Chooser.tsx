@@ -5,7 +5,8 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useState, type KeyboardEvent } from "react";
 import { useAutoDemo, useDemoScript } from "@/components/bento/useAutoDemo";
 import ProjectLogo from "@/components/ui/ProjectLogo";
-import { bySlug, EASE, engagements } from "./data";
+import { bySlug, EASE, engagements, GUTTER, openBrief } from "./data";
+import { useReducedSafe } from "./usePhases";
 
 /** How long each type stays up while the chooser plays by itself. */
 const CYCLE = 4200;
@@ -19,12 +20,27 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * as tall as the longest and switching never moves the page.
  */
 export default function Chooser() {
+  const reduced = useReducedSafe();
   const { ref: demoRef, active: demoActive } = useAutoDemo<HTMLDivElement>({ amount: 0.4 });
   const [sel, setSel] = useState(0);
   const [resting, setResting] = useState(false);
   const cycling = demoActive && !resting;
   useDemoScript(cycling, [{ at: CYCLE, run: () => setSel((s) => (s + 1) % engagements.length) }], { loop: true, loopDelay: 1 });
   const e = engagements[sel];
+
+  /**
+   * Stacked (below lg), the panel sits under the list. If a tap picks a type
+   * while the panel is still mostly below the fold, bring its top into view so
+   * the choice visibly lands.
+   */
+  const choose = (i: number) => {
+    setSel(i);
+    const panel = document.getElementById(`need-panel-${i}`)?.parentElement;
+    if (!panel || window.matchMedia("(min-width: 1024px)").matches) return;
+    const top = panel.getBoundingClientRect().top;
+    if (top < window.innerHeight - 200) return;
+    window.scrollTo({ top: window.scrollY + top - Math.max(96, window.innerHeight * 0.3), behavior: reduced ? "auto" : "smooth" });
+  };
 
   const onKey = (ev: KeyboardEvent<HTMLDivElement>) => {
     const n = engagements.length;
@@ -41,7 +57,7 @@ export default function Chooser() {
       ref={demoRef}
       onPointerEnter={(ev) => ev.pointerType === "mouse" && setResting(true)}
       onPointerLeave={() => setResting(false)}
-      className="mx-auto grid max-w-[1500px] grid-cols-1 gap-10 px-5 md:px-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:gap-12 lg:px-12 xl:gap-16 2xl:px-16"
+      className={`mx-auto grid max-w-[1500px] grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:gap-12 xl:gap-16 ${GUTTER}`}
     >
       <div className="min-w-0 lg:max-w-[520px]">
         <div className="flex h-7 items-center gap-3">
@@ -54,21 +70,22 @@ export default function Chooser() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -6 }}
                 transition={{ duration: 0.35, ease: EASE }}
-                className="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1 text-[11.5px] text-text-3"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-line px-2.5 py-1 text-[12px] text-text-3"
               >
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="absolute inset-0 animate-ping rounded-full opacity-70" style={{ background: e.accent }} />
                   <span className="relative h-1.5 w-1.5 rounded-full transition-colors duration-500" style={{ background: e.accent }} />
                 </span>
-                Browsing on its own · tap to pick
+                <span className="min-[370px]:hidden">Browsing · tap to pick</span>
+                <span className="hidden min-[370px]:inline">Browsing on its own · tap to pick</span>
               </motion.span>
             )}
           </AnimatePresence>
         </div>
-        <h3 className="mt-3 text-[clamp(2.1rem,4.2vw,3.6rem)] font-semibold leading-[0.98] tracking-[-0.03em] [font-variation-settings:'wdth'_80,'opsz'_96]">
+        <h3 className="mt-3 text-balance text-[clamp(2.1rem,4.2vw,3.6rem)] font-semibold leading-[0.98] tracking-[-0.03em] [font-variation-settings:'wdth'_80,'opsz'_96]">
           What do you need?
         </h3>
-        <p className="mt-4 max-w-[44ch] text-[clamp(1rem,1.3vw,1.125rem)] leading-[1.5] text-text-2">
+        <p className="mt-4 max-w-[44ch] text-pretty text-[clamp(1rem,1.3vw,1.125rem)] leading-[1.5] text-text-2">
           Pick the closest fit. Each one points to work where I’ve already done it.
         </p>
 
@@ -84,22 +101,22 @@ export default function Chooser() {
                 aria-selected={on}
                 aria-controls={`need-panel-${i}`}
                 tabIndex={on ? 0 : -1}
-                onClick={() => setSel(i)}
-                className="group/tab relative flex min-h-14 w-full items-center gap-4 rounded-2xl px-4 py-3 text-left md:min-h-[60px] md:py-0"
+                onClick={() => choose(i)}
+                className="group/tab relative flex min-h-14 w-full touch-manipulation items-center gap-4 rounded-2xl px-4 py-3 text-left transition-[background-color,transform] duration-200 [-webkit-tap-highlight-color:transparent] active:scale-[0.985] active:bg-white/[0.03] md:min-h-[60px] md:py-0"
               >
                 {on && (
                   <motion.span
                     layoutId="need-pill"
                     className="absolute inset-0 rounded-2xl border border-white/[0.09] bg-white/[0.045] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
-                    transition={{ type: "spring", stiffness: 380, damping: 34 }}
+                    transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 34 }}
                   />
                 )}
                 <span className="relative w-6 text-[12.5px] tabular-nums transition-colors duration-500" style={{ color: on ? x.accent : "var(--text-3)" }}>
                   {pad(i + 1)}
                 </span>
                 <span
-                  className={`relative min-w-0 flex-1 text-[clamp(1.05rem,1.45vw,1.3rem)] leading-[1.25] font-medium tracking-[-0.012em] transition-colors duration-300 ${
-                    on ? "text-text" : "text-text-3 group-hover/tab:text-text-2"
+                  className={`relative min-w-0 flex-1 text-balance text-[clamp(1.05rem,1.45vw,1.3rem)] leading-[1.25] font-medium tracking-[-0.012em] transition-colors duration-300 ${
+                    on ? "text-text" : "text-text-3 group-hover/tab:text-text-2 group-active/tab:text-text-2"
                   }`}
                 >
                   {x.name}
@@ -131,6 +148,7 @@ export default function Chooser() {
 
       <div
         onPointerMove={(ev) => {
+          if (ev.pointerType !== "mouse") return;
           const r = ev.currentTarget.getBoundingClientRect();
           ev.currentTarget.style.setProperty("--mx", `${ev.clientX - r.left}px`);
           ev.currentTarget.style.setProperty("--my", `${ev.clientY - r.top}px`);
@@ -140,7 +158,7 @@ export default function Chooser() {
           ev.currentTarget.style.setProperty("--my", "-999px");
         }}
         style={{ ["--tile-glow" as string]: e.accent }}
-        className="spot relative grid min-w-0 self-start overflow-hidden rounded-[28px] border border-white/[0.09] bg-[rgba(12,13,16,0.6)] shadow-[0_50px_120px_-60px_rgba(0,0,0,1),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl md:rounded-[32px] lg:mt-10"
+        className="spot relative grid min-w-0 self-start overflow-hidden rounded-[28px] border border-white/[0.09] bg-[rgba(12,13,16,0.6)] shadow-[0_50px_120px_-60px_rgba(0,0,0,1),inset_0_1px_0_rgba(255,255,255,0.06)] md:rounded-[32px] lg:mt-10 lg:backdrop-blur-xl"
       >
         {engagements.map((x, i) => (
           <div
@@ -201,10 +219,10 @@ export default function Chooser() {
                   <span className="text-text-2">{pad(i + 1)}</span> / {pad(engagements.length)}
                 </span>
               </div>
-              <h4 className="mt-5 max-w-[18ch] text-[clamp(1.75rem,3vw,2.6rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-text [font-variation-settings:'wdth'_85,'opsz'_96]">
+              <h4 className="mt-5 max-w-[18ch] text-balance text-[clamp(1.75rem,3vw,2.6rem)] font-semibold leading-[1.02] tracking-[-0.03em] text-text [font-variation-settings:'wdth'_85,'opsz'_96]">
                 {x.name}
               </h4>
-              <p className="mt-3 max-w-[46ch] text-[clamp(1rem,1.25vw,1.125rem)] leading-[1.55] text-text-2">{x.body}</p>
+              <p className="mt-3 max-w-[46ch] text-pretty text-[clamp(1rem,1.25vw,1.125rem)] leading-[1.55] text-text-2">{x.body}</p>
 
               <div className="mt-7 text-[13px] text-text-3">Seen in</div>
               <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -219,7 +237,7 @@ export default function Chooser() {
                       <a
                         href={`#${slug}`}
                         style={{ ["--brand" as string]: p.glow[0] }}
-                        className="group/p relative flex h-full items-center gap-3 rounded-2xl border border-line bg-white/[0.025] p-3 transition-[border-color,background-color,transform] duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--brand)_55%,transparent)] hover:bg-[color-mix(in_oklab,var(--brand)_7%,transparent)] sm:flex-col sm:items-start sm:gap-3.5 sm:p-3.5"
+                        className="group/p relative flex h-full items-center gap-3 rounded-2xl border border-line bg-white/[0.025] p-3 transition-[border-color,background-color,transform] duration-300 [-webkit-tap-highlight-color:transparent] active:scale-[0.98] active:border-[color-mix(in_oklab,var(--brand)_55%,transparent)] active:bg-[color-mix(in_oklab,var(--brand)_7%,transparent)] hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--brand)_55%,transparent)] hover:bg-[color-mix(in_oklab,var(--brand)_7%,transparent)] sm:flex-col sm:items-start sm:gap-3.5 sm:p-3.5"
                       >
                         <ProjectLogo slug={p.slug} name={p.name} size={38} />
                         <span className="min-w-0 flex-1 sm:w-full">
@@ -239,10 +257,11 @@ export default function Chooser() {
                 })}
               </ul>
 
-              <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 md:mt-auto md:pt-8">
+              <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-8">
                 <a
                   href="#contact"
-                  className="group/cta inline-flex h-12 items-center gap-2 rounded-full bg-text px-6 text-[15px] font-medium text-black transition-transform duration-300 hover:scale-[1.03]"
+                  onClick={() => openBrief("build")}
+                  className="group/cta inline-flex h-12 items-center gap-2 rounded-full bg-text px-6 text-[15px] font-medium text-black transition-transform duration-300 [-webkit-tap-highlight-color:transparent] hover:scale-[1.03] active:scale-[0.97]"
                 >
                   Start this project
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/cta:translate-x-0.5" strokeWidth={2} aria-hidden="true" />

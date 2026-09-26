@@ -5,6 +5,12 @@ import { AndroidMark, AppleMark, PlayMark, TechLogo } from "./logos";
 
 export const platformLabel: Record<Platform, string> = { ios: "iOS", android: "Android", web: "Web", mac: "Mac", tv: "TV" };
 
+/**
+ * The quietest text tone. On phones and tablets it is lifted a touch so small
+ * labels clear WCAG AA (4.5:1) on black; desktop keeps the original tone.
+ */
+export const faint = "text-text-3 max-lg:text-[color-mix(in_oklab,var(--text-3)_74%,var(--text-2))]";
+
 function PlatformGlyph({ p }: { p: Platform }) {
   const c = "h-3.5 w-3.5";
   if (p === "ios") return <AppleMark className={c} />;
@@ -19,7 +25,7 @@ export function MetaRow({ project, n, total }: { project: Project; n: number; to
   const a = project.glow[0];
   return (
     <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-[13px] text-text-2">
-      <span className="mr-1 tabular-nums text-text-3">
+      <span className={`mr-1 tabular-nums ${faint}`}>
         <span className="text-text">{String(n).padStart(2, "0")}</span> / {String(total).padStart(2, "0")}
       </span>
       <span className="inline-flex h-7 items-center gap-2 rounded-full border border-line px-3" title={statusCopy[project.status]}>
@@ -49,10 +55,10 @@ export function MetaRow({ project, n, total }: { project: Project; n: number; to
 export function Links({ project, color }: { project: Project; color: string }) {
   if (!project.links.length)
     return (
-      <p className="text-[14px] text-text-3">{project.status === "Internal" ? "Private tool. Walkthrough on request." : "Staging link on request."}</p>
+      <p className={`text-[14px] ${faint}`}>{project.status === "Internal" ? "Private tool. Walkthrough on request." : "Staging link on request."}</p>
     );
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2.5 lg:gap-2">
       {project.links.map((l) => (
         <a
           key={l.href}
@@ -60,7 +66,7 @@ export function Links({ project, color }: { project: Project; color: string }) {
           target="_blank"
           rel="noreferrer"
           style={{ ["--brand" as string]: color }}
-          className="group/link inline-flex h-10 items-center gap-2 rounded-full border border-line-strong bg-white/[0.02] px-4 text-[14px] text-text transition-[background-color,border-color,color] duration-300 hover:border-transparent hover:bg-[var(--brand)] hover:text-black focus-visible:bg-[var(--brand)] focus-visible:text-black"
+          className="group/link inline-flex h-11 touch-manipulation items-center gap-2 rounded-full border border-line-strong bg-white/[0.02] px-4 text-[14px] text-text transition-[background-color,border-color,color] duration-300 [-webkit-tap-highlight-color:transparent] hover:border-transparent hover:bg-[var(--brand)] hover:text-black focus-visible:bg-[var(--brand)] focus-visible:text-black pointer-coarse:active:border-transparent pointer-coarse:active:bg-[var(--brand)] pointer-coarse:active:text-black pointer-coarse:active:duration-75 lg:h-10 lg:pointer-coarse:h-11"
         >
           {l.kind === "appstore" && <AppleMark className="h-4 w-4" />}
           {l.kind === "play" && <PlayMark className="h-3.5 w-3.5" />}
@@ -83,7 +89,7 @@ export function Craft({ project }: { project: Project }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-1.5">
-        <span className="mr-1 text-[13px] text-text-3">What I did</span>
+        <span className={`mr-1 text-[13px] ${faint}`}>What I did</span>
         {project.roles.map((r) => (
           <span key={r} className="inline-flex h-[26px] items-center rounded-full bg-white/[0.06] px-2.5 text-[12.5px] text-text">
             {r}

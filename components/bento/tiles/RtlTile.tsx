@@ -446,7 +446,7 @@ export default function RtlTile({ className }: { className?: string }) {
                       onClick={() => setMode(l)}
                       whileTap={{ scale: 0.94 }}
                       transition={spring}
-                      className={`relative h-10 rounded-full px-4 text-[13px] font-medium transition-colors duration-200 ${
+                      className={`relative h-10 rounded-full px-4 text-[13px] font-medium transition-colors duration-200 pointer-coarse:h-11 ${
                         on ? "" : "text-text-2 hover:text-text"
                       }`}
                       style={on ? { color: mirror ? WRONG : "#fff" } : undefined}
@@ -484,7 +484,7 @@ export default function RtlTile({ className }: { className?: string }) {
                 onClick={() => setMode(mirror ? "ar" : "mirror")}
                 whileTap={{ scale: 0.94 }}
                 transition={spring}
-                className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-full ps-3 pe-3.5 text-[13px] transition-[color,background-color,box-shadow] duration-200 ${
+                className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-full ps-3 pe-3.5 text-[13px] transition-[color,background-color,box-shadow] duration-200 pointer-coarse:h-11 ${
                   mirror ? "" : "text-text-2 hover:text-text"
                 }`}
                 style={{

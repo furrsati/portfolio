@@ -497,7 +497,7 @@ function Segmented<T extends string | number>({
             }}
             whileTap={disabled ? undefined : { scale: 0.92 }}
             transition={SPRING}
-            className={`relative h-10 min-w-10 flex-1 whitespace-nowrap text-[13px] font-medium transition-colors duration-200 ${
+            className={`relative h-10 min-w-10 flex-1 whitespace-nowrap text-[13px] font-medium transition-colors duration-200 pointer-coarse:h-11 ${
               dense ? "px-1.5" : "px-3.5"
             } ${on ? (tone === "orange" ? "text-black" : "text-white") : "text-text-2 hover:text-text"} ${
               disabled ? "cursor-not-allowed" : ""
@@ -640,7 +640,7 @@ function StatusPill({ phase }: { phase: Phase }) {
   return (
     <motion.span
       layout
-      className="relative inline-flex h-6 shrink-0 items-center overflow-hidden rounded-full px-2.5 text-[11.5px] font-medium"
+      className="relative inline-flex h-6 shrink-0 items-center overflow-hidden rounded-full px-2.5 text-[11.5px] font-medium max-lg:text-[12px]"
       initial={false}
       animate={{ backgroundColor: c.bg, boxShadow: `inset 0 0 0 1px ${c.ring}`, color: c.color }}
       transition={{ ...SPRING, backgroundColor: { duration: 0.2 }, boxShadow: { duration: 0.2 }, color: { duration: 0.2 } }}
@@ -745,7 +745,7 @@ function EventLog({ entries, reduced }: { entries: LogEntry[]; reduced: boolean 
       </p>
       <ol
         aria-labelledby={labelId}
-        className="mt-1 flex min-h-[58px] min-w-0 flex-1 flex-col gap-[2px] font-code text-[11.5px] leading-[18px] @min-[520px]:mt-0"
+        className="mt-1 flex min-h-[58px] min-w-0 flex-1 flex-col gap-[2px] font-code text-[11.5px] leading-[18px] @min-[520px]:mt-0 max-lg:@max-[300px]:min-h-[76px]"
       >
         <AnimatePresence initial={false} mode="popLayout">
           {entries.length === 0 ? (
@@ -1315,7 +1315,7 @@ export default function EscrowTile({ className }: { className?: string }) {
                         changeAmount(amount + (e.key === "ArrowUp" ? 1 : -1) * (e.shiftKey ? 1_000 : 100));
                       }
                     }}
-                    className="h-full w-[5.75rem] bg-transparent pl-2 pr-1 text-[15px] font-medium tabular-nums text-text"
+                    className="h-full w-[5.75rem] bg-transparent pl-2 pr-1 text-[15px] font-medium tabular-nums text-text pointer-coarse:text-[16px]"
                     style={{ outline: "none" }}
                   />
                 </div>
@@ -1327,7 +1327,7 @@ export default function EscrowTile({ className }: { className?: string }) {
               <div className="flex items-center gap-3">
                 <span id={feeLabelId} className="flex flex-col text-[13px] leading-tight text-text-2">
                   Fee rate
-                  <span className="text-[11.5px] text-text-3">illustrative</span>
+                  <span className="text-[11.5px] text-text-3 max-lg:text-[12px]">illustrative</span>
                 </span>
                 <Segmented
                   options={RATES}
@@ -1504,7 +1504,7 @@ export default function EscrowTile({ className }: { className?: string }) {
             </div>
 
             {/* 6. Actions */}
-            <div className="mt-3.5 grid grid-cols-2 gap-2 @min-[520px]:flex @min-[520px]:flex-wrap @min-[520px]:items-center">
+            <div className="mt-3.5 grid grid-cols-2 gap-2 max-lg:flex max-lg:flex-wrap @min-[520px]:flex @min-[520px]:flex-wrap @min-[520px]:items-center">
               <motion.button
                 type="button"
                 onClick={release}
@@ -1513,7 +1513,7 @@ export default function EscrowTile({ className }: { className?: string }) {
                 whileHover={busy ? undefined : { y: -1 }}
                 whileTap={busy ? undefined : { scale: 0.96 }}
                 transition={SPRING}
-                className={`relative col-span-2 inline-flex h-11 items-center justify-center overflow-hidden px-5 text-[14px] font-semibold text-black @min-[520px]:min-w-[10.5rem] ${
+                className={`relative col-span-2 inline-flex h-11 items-center justify-center overflow-hidden px-5 text-[14px] font-semibold text-black max-lg:basis-full @min-[520px]:min-w-[10.5rem] max-lg:@min-[520px]:basis-auto ${
                   busy ? "cursor-progress" : ""
                 }`}
                 style={{
@@ -1547,7 +1547,7 @@ export default function EscrowTile({ className }: { className?: string }) {
                 whileHover={busy ? undefined : { y: -1 }}
                 whileTap={busy ? undefined : { scale: 0.96 }}
                 transition={SPRING}
-                className={`inline-flex min-h-11 items-center justify-center gap-2 bg-white/[0.04] px-3 py-1.5 text-center text-[13px] leading-tight text-text-2 ring-1 ring-inset ring-white/10 transition-[color,box-shadow] duration-200 hover:text-text hover:ring-[#E11D48]/50 @min-[520px]:px-4 ${
+                className={`inline-flex min-h-11 items-center justify-center gap-2 bg-white/[0.04] px-3 py-1.5 text-center text-[13px] leading-tight text-text-2 ring-1 ring-inset ring-white/10 transition-[color,box-shadow] duration-200 hover:text-text hover:ring-[#E11D48]/50 max-lg:grow max-lg:@max-[400px]:px-2.5 @min-[520px]:px-4 max-lg:@min-[520px]:grow-0 ${
                   busy ? "cursor-not-allowed opacity-60" : ""
                 }`}
                 style={{ borderRadius: 9999 }}
@@ -1567,7 +1567,7 @@ export default function EscrowTile({ className }: { className?: string }) {
                 whileHover={busy ? undefined : { y: -1 }}
                 whileTap={busy ? undefined : { scale: 0.96 }}
                 transition={SPRING}
-                className={`inline-flex min-h-11 items-center justify-center gap-2 bg-white/[0.04] px-3 py-1.5 text-center text-[13px] leading-tight text-text-2 ring-1 ring-inset ring-white/10 transition-[color,box-shadow] duration-200 hover:text-text hover:ring-[#E11D48]/50 @min-[520px]:px-4 ${
+                className={`inline-flex min-h-11 items-center justify-center gap-2 bg-white/[0.04] px-3 py-1.5 text-center text-[13px] leading-tight text-text-2 ring-1 ring-inset ring-white/10 transition-[color,box-shadow] duration-200 hover:text-text hover:ring-[#E11D48]/50 max-lg:grow max-lg:@max-[400px]:px-2.5 @min-[520px]:px-4 max-lg:@min-[520px]:grow-0 ${
                   busy ? "cursor-not-allowed opacity-60" : ""
                 }`}
                 style={{ borderRadius: 9999 }}
@@ -1585,7 +1585,10 @@ export default function EscrowTile({ className }: { className?: string }) {
             </div>
 
             {/* 7. Result */}
-            <p aria-live={demoActive ? "off" : "polite"} className="mt-2 min-h-[36px] text-[13px] leading-[1.45]">
+            <p
+              aria-live={demoActive ? "off" : "polite"}
+              className="mt-2 min-h-[36px] text-[13px] leading-[1.45] max-lg:min-h-[3.4rem] max-lg:@max-[520px]:min-h-[4.6rem]"
+            >
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={message.id}

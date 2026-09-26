@@ -89,13 +89,13 @@ export default function Backdrop({
           </div>
         </motion.div>
       </div>
-      {/* Below lg: the glow and a smaller, still word behind the device */}
+      {/* Below lg: the glow and a smaller, still word behind the device (same box as the stage) */}
       <div
-        className="absolute inset-x-0 top-14 h-[max(52svh,340px)] lg:hidden"
+        className="absolute inset-x-0 top-14 h-[max(min(52svh,100vw),min(340px,100svh_-_6rem))] lg:hidden"
         style={{ background: `radial-gradient(52% 50% at 50% 50%, color-mix(in oklab, ${a} 20%, transparent), transparent 72%)` }}
       />
-      <div className="absolute inset-x-0 top-[calc(3.5rem+max(26svh,170px))] flex -translate-y-1/2 justify-center whitespace-nowrap lg:hidden">
-        {word("text-[30vw]")}
+      <div className="absolute inset-x-0 top-[calc(3.5rem+max(min(26svh,50vw),min(170px,50svh_-_3rem)))] flex -translate-y-1/2 justify-center whitespace-nowrap lg:hidden">
+        {word("text-[min(30vw,40svh)]")}
       </div>
     </div>,
     document.body,

@@ -409,7 +409,7 @@ const SunGlyph = ({ color }: { color: string }) => (
 
 function NoteLine({ note }: { note?: Note }) {
   return (
-    <span className="relative mt-0.5 flex h-4 items-center overflow-hidden text-[11px] leading-4">
+    <span className="relative mt-0.5 flex h-4 items-center overflow-hidden text-[11px] leading-4 max-lg:text-[12px]">
       <AnimatePresence mode="popLayout" initial={false}>
         {note && (
           <motion.span
@@ -522,7 +522,7 @@ function Chip({
         <motion.span
           layout="position"
           aria-hidden="true"
-          className="whitespace-nowrap text-[11.5px] leading-none"
+          className="whitespace-nowrap text-[11.5px] leading-none max-lg:text-[12px]"
           style={{ color: "rgba(241,236,226,0.82)" }}
         >
           {t.tag}
@@ -567,7 +567,7 @@ function Pile({
         return <Chip key={id} id={id} expanded={expanded} done={done} fresh={ENTRY[id] === step} gap={gap} />;
       })}
       {ids.length === 0 && (
-        <li className="text-[11.5px]" style={{ color: DIM }}>
+        <li className="text-[11.5px] max-lg:text-[12px]" style={{ color: DIM }}>
           {empty}
         </li>
       )}
@@ -628,7 +628,7 @@ function DecisionCard({
       <motion.div layout="position" className="flex items-center gap-2">
         <Critter agent="debugger" framed />
         <span
-          className="inline-flex h-6 items-center gap-1.5 whitespace-nowrap rounded-full px-2 text-[11px] font-medium"
+          className="inline-flex h-6 items-center gap-1.5 whitespace-nowrap rounded-full px-2 text-[11px] font-medium max-lg:text-[12px]"
           style={{ color: TERRA_TEXT, background: "rgba(212,113,78,0.16)" }}
         >
           <Glyph size={12}>
@@ -668,7 +668,7 @@ function DecisionCard({
           whileHover={{ y: -1 }}
           whileTap={{ scale: 0.95 }}
           transition={SPRING}
-          className="relative inline-flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13px] font-medium"
+          className="relative inline-flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13px] font-medium pointer-coarse:h-11"
           style={{
             background: `linear-gradient(180deg, #E0845F, ${TERRA})`,
             color: HQ_BG,
@@ -691,7 +691,7 @@ function DecisionCard({
           whileHover={{ y: -1 }}
           whileTap={{ scale: 0.95 }}
           transition={SPRING}
-          className="relative inline-flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13px] font-medium transition-[background-color,box-shadow] duration-200"
+          className="relative inline-flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13px] font-medium transition-[background-color,box-shadow] duration-200 pointer-coarse:h-11"
           style={{
             color: CREAM,
             background: held ? "rgba(241,236,226,0.16)" : "rgba(241,236,226,0.05)",
@@ -750,7 +750,7 @@ function Quiet({ approved, ran }: { approved: boolean; ran: boolean }) {
           <p className="mt-1 text-[12.5px] font-medium" style={{ color: CREAM }}>
             Backup first, then migrate. Logged.
           </p>
-          <p className="text-[11.5px]" style={{ color: DIM }}>
+          <p className="text-[11.5px] max-lg:text-[12px]" style={{ color: DIM }}>
             {ran ? "The migration ran after its backup." : "The debugger is taking the backup."}
           </p>
         </>
@@ -760,7 +760,7 @@ function Quiet({ approved, ran }: { approved: boolean; ran: boolean }) {
           <p className="mt-1 text-[12.5px] font-medium" style={{ color: CREAM }}>
             Nothing needs you.
           </p>
-          <p className="text-[11.5px]" style={{ color: DIM }}>
+          <p className="text-[11.5px] max-lg:text-[12px]" style={{ color: DIM }}>
             The supervisor answers what it can.
           </p>
         </>
@@ -838,7 +838,7 @@ function SupervisorGate({ sup, running }: { sup: Note; running: boolean }) {
 
 function LaneLabel({ id, label, count, accent, children }: { id: string; label: string; count: number; accent?: boolean; children?: ReactNode }) {
   return (
-    <div className="flex h-5 items-center gap-1.5 text-[11.5px]">
+    <div className="flex h-5 items-center gap-1.5 text-[11.5px] max-lg:text-[12px]">
       <span id={id} style={{ color: accent ? TERRA_TEXT : DIM }}>
         {label}
       </span>
@@ -972,7 +972,7 @@ function RoundButton({
       whileHover={{ scale: 1.06 }}
       whileTap={{ scale: 0.9 }}
       transition={SPRING}
-      className="grid h-10 w-10 shrink-0 place-items-center rounded-full"
+      className="grid h-10 w-10 shrink-0 place-items-center rounded-full pointer-coarse:h-11 pointer-coarse:w-11"
       style={{
         color: CREAM,
         background: primary ? "rgba(212,113,78,0.2)" : "rgba(255,255,255,0.05)",
@@ -996,6 +996,17 @@ function Scrubber({
   onScrub: (v: number) => void;
 }) {
   const pct = (step / LAST) * 100;
+  // Touch: some mobile browsers only move a range by its (invisible) thumb.
+  // A tap anywhere on the track seeks there, and a sideways drag scrubs,
+  // while a vertical swipe still scrolls the page.
+  const touch = useRef<{ id: number; x: number; live: boolean } | null>(null);
+  const seek = (el: HTMLElement, clientX: number) => {
+    const r = el.getBoundingClientRect();
+    // The drawn track is inset 8px on each side (inset-x-2 below).
+    const p = Math.min(1, Math.max(0, (clientX - r.left - 8) / Math.max(1, r.width - 16)));
+    const v = Math.round(p * LAST);
+    if (v !== step) onScrub(v);
+  };
   return (
     <div className="relative mt-1 h-5">
       <input
@@ -1007,7 +1018,27 @@ function Scrubber({
         aria-label="Replay position"
         aria-valuetext={valueText}
         onChange={(e) => onScrub(Number(e.target.value))}
-        className="peer absolute inset-x-0 -top-2.5 z-10 h-10 w-full cursor-pointer appearance-none opacity-0"
+        onPointerDown={(e) => {
+          if (e.pointerType === "touch") touch.current = { id: e.pointerId, x: e.clientX, live: false };
+        }}
+        onPointerMove={(e) => {
+          const t = touch.current;
+          if (!t || t.id !== e.pointerId) return;
+          if (!t.live && Math.abs(e.clientX - t.x) < 6) return;
+          t.live = true;
+          seek(e.currentTarget, e.clientX);
+        }}
+        onPointerUp={(e) => {
+          const t = touch.current;
+          if (!t || t.id !== e.pointerId) return;
+          touch.current = null;
+          seek(e.currentTarget, e.clientX);
+        }}
+        onPointerCancel={() => {
+          touch.current = null;
+        }}
+        style={{ touchAction: "pan-y" }}
+        className="peer absolute inset-x-0 -top-2.5 z-10 h-10 w-full cursor-pointer appearance-none opacity-0 pointer-coarse:-top-3 pointer-coarse:h-11"
       />
       <div
         aria-hidden="true"
@@ -1260,7 +1291,7 @@ export default function AgentsTile({ className }: { className?: string }) {
                       HQ
                     </span>
                   </LaneLabel>
-                  <div className="relative mt-1 h-[178px] @min-[19rem]:h-[136px]">
+                  <div className="relative mt-1 h-[178px] @min-[19rem]:h-[136px] pointer-coarse:@min-[19rem]:h-[140px]">
                     <motion.div
                       aria-hidden="true"
                       className="pointer-events-none absolute -inset-3 rounded-[24px]"
@@ -1311,7 +1342,7 @@ export default function AgentsTile({ className }: { className?: string }) {
                     ))}
                     {working.length === 0 && (
                       <li
-                        className="flex h-12 items-center justify-center rounded-[12px] text-[11.5px] @min-[18.5rem]:col-span-2"
+                        className="flex h-12 items-center justify-center rounded-[12px] text-[11.5px] @min-[18.5rem]:col-span-2 max-lg:text-[12px]"
                         style={{ color: DIM, border: "1px dashed rgba(241,236,226,0.1)" }}
                       >
                         No agent on a task
@@ -1361,7 +1392,7 @@ export default function AgentsTile({ className }: { className?: string }) {
           >
             <motion.ol
               aria-label="Night log"
-              className="absolute inset-x-3 bottom-2 flex flex-col gap-0.5 font-code text-[11px] leading-[16px]"
+              className="absolute inset-x-3 bottom-2 flex flex-col gap-0.5 font-code text-[11px] leading-[16px] max-lg:text-[12px] max-lg:leading-[17px]"
               initial={false}
               animate={{ opacity: dimmed ? 0 : 1 }}
               transition={{ duration: dimmed ? 0.3 : 0.55, ease: [0.22, 1, 0.36, 1], delay: dimmed ? 0 : 0.08 }}

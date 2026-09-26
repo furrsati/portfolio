@@ -30,8 +30,8 @@ function States({ i, states }: { i: number; states: ReactNode[] }) {
 
 function Store({ mark, name, state, accent, reduced }: { mark: ReactNode; name: string; state: number; accent: string; reduced: boolean }) {
   return (
-    <div className={`relative overflow-hidden p-3 @md:p-3.5 ${glass}`}>
-      <div className="flex items-center gap-2.5 @md:gap-3">
+    <div className={`relative overflow-hidden p-2.5 @xs:p-3 @md:p-3.5 ${glass}`}>
+      <div className="flex items-center gap-2 @xs:gap-2.5 @md:gap-3">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] bg-white/[0.07] text-text ring-1 ring-white/10">{mark}</span>
         <div className="min-w-0">
           <div className="truncate text-[13.5px] font-medium leading-tight text-text">{name}</div>
@@ -225,7 +225,9 @@ export default function ShipVisual({ play, reduced, accent }: VisualProps) {
       >
         <span className="flex min-w-0 items-center gap-2 text-[12.5px] text-text-2">
           <RotateCcw className="h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden="true" />
-          <span className="truncate">Old version kept as the rollback</span>
+          <span className="truncate">
+            Old version kept as <span className="hidden @xs:inline">the </span>rollback
+          </span>
         </span>
         <span className="inline-flex h-6 shrink-0 items-center gap-1 rounded-full bg-white/[0.06] px-2 text-[11px] text-text">
           <Check className="h-3 w-3" strokeWidth={2.6} aria-hidden="true" />

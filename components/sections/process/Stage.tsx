@@ -17,7 +17,9 @@ function glow(accent: string) {
   return `radial-gradient(62% 52% at 68% 34%, color-mix(in oklab, ${accent} 17%, transparent), transparent 72%), radial-gradient(46% 40% at 12% 104%, color-mix(in oklab, ${accent} 11%, transparent), transparent 70%)`;
 }
 
+/** The pointer spotlight is for a mouse; under a finger it would only flash as the page scrolls. */
 function spotlight(e: React.PointerEvent<HTMLDivElement>) {
+  if (e.pointerType !== "mouse") return;
   const r = e.currentTarget.getBoundingClientRect();
   e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
   e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
@@ -119,7 +121,7 @@ export default function Stage({ step, play, reduced, single = false }: { step: n
       onPointerMove={spotlight}
       onPointerLeave={spotlightOff}
       style={{ ["--tile-glow" as string]: s.accent }}
-      className={`spot relative w-full overflow-hidden rounded-[28px] border border-white/[0.09] bg-[rgba(12,13,16,0.6)] shadow-[0_50px_120px_-60px_rgba(0,0,0,1),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl md:rounded-[32px] ${
+      className={`spot relative w-full overflow-hidden rounded-[28px] border border-white/[0.09] bg-[rgba(12,13,16,0.6)] shadow-[0_50px_120px_-60px_rgba(0,0,0,1),inset_0_1px_0_rgba(255,255,255,0.06)] md:rounded-[32px] lg:backdrop-blur-xl ${
         single ? "" : "h-full"
       }`}
     >
@@ -148,7 +150,7 @@ export default function Stage({ step, play, reduced, single = false }: { step: n
       {label}
 
       {single ? (
-        <div className="@container relative px-4 pb-5 pt-14 sm:px-6 md:pb-7 md:pt-16" aria-hidden="true" inert>
+        <div className="@container relative px-3 pb-5 pt-14 min-[370px]:px-4 sm:px-6 md:pb-7 md:pt-16" aria-hidden="true" inert>
           {(() => {
             const V = visuals[step];
             return <V play={play} reduced={reduced} accent={s.accent} />;
