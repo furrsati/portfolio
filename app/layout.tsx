@@ -1,53 +1,49 @@
-import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Bricolage_Grotesque, JetBrains_Mono, Tajawal } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
+  axes: ["opsz", "wdth"],
+  display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
+  subsets: ["arabic"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  preload: false,
+});
+
+const mono = JetBrains_Mono({
+  variable: "--font-mono-code",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
-  title: "Dani Zein | Mobile & Web Full-Stack Developer",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  title: "Dani Zein · I build products end to end",
   description:
-    "Dani Zein builds production-ready mobile and web platforms for startups. React Native, Next.js, Node.js. From idea to App Store.",
-  keywords: [
-    "Dani Zein",
-    "Full-Stack Developer",
-    "React Native",
-    "Next.js",
-    "Node.js",
-    "Mobile Developer",
-    "Web Developer",
-    "Portfolio",
-  ],
+    "Full-stack developer in Lebanon, working worldwide. Marketplaces, AI systems and Arabic-first apps: seven real products, with live demos of how they work.",
   openGraph: {
-    title: "Dani Zein | Mobile & Web Full-Stack Developer",
+    title: "Dani Zein · I build products end to end",
     description:
-      "Full-Stack Developer specializing in React Native, Next.js, and Node.js.",
+      "Marketplaces, AI systems and Arabic-first apps. Seven real products, with live demos of how they work.",
     type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Dani Zein | Mobile & Web Full-Stack Developer",
-  },
+  twitter: { card: "summary_large_image", title: "Dani Zein · I build products end to end" },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = { themeColor: "#000000", colorScheme: "dark" };
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
-      >
+    <html lang="en" className="bg-black">
+      <body className={`${bricolage.variable} ${tajawal.variable} ${mono.variable} antialiased`}>
         {children}
       </body>
     </html>

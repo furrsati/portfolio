@@ -1,36 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dani Zein · portfolio
 
-## Getting Started
+A dark, cinematic portfolio: seven real products shown as 3D devices lit in each product's brand colour, a bento grid of live mini-demos taken from those products, and a contact form that actually sends.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Copy `.env.example` to `.env.local` and add a Resend key to make the contact form deliver.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How it's built
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Next.js 16** (App Router), **React 19**, **Tailwind CSS v4**, **framer-motion**.
+- **3D:** one WebGL canvas (`components/three/Stage.tsx`) renders every device through drei `View`s pinned to DOM elements. The devices in `components/three/devices.tsx` are built from geometry with the real screenshots as textures, so there are no model files.
+- **Scroll:** Lenis smooth scroll and the WebGL render share a single frame loop (`components/layout/SmoothScroll.tsx`), so devices never lag the page.
+- **Content:** every project fact lives in `lib/content/projects.ts`.
+- **Live demos:** `components/bento/tiles/*`. Each one is self-contained and uses `components/bento/Tile.tsx`.
+- **Accessibility:** reduced motion turns off smooth scroll, autoplay and the entrance animation. Everything is keyboard reachable, and ⌘K opens a command palette.
 
-## Learn More
+## Adding or updating a project
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Put screenshots in `public/work/`. Phone shots should be about 460×1000 and web shots about 1600px wide, as JPEG.
+2. Add or update the entry in `lib/content/projects.ts`: status, credit, stats, hard parts, links and brand `glow`.

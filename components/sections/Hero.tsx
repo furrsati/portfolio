@@ -1,254 +1,111 @@
 "use client";
 
-import { useRef, useEffect, useCallback, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import Button from "@/components/ui/Button";
-import Scene from "@/components/three/Scene";
+import { View } from "@react-three/drei";
+import { useInView, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import { Bot, Languages, Smartphone, Wallet } from "lucide-react";
+import HeroScene from "@/components/three/HeroScene";
+import ProjectLogo from "@/components/ui/ProjectLogo";
+import { projects } from "@/lib/content/projects";
+import LiveName from "./LiveName";
 
-const ease = [0.25, 0.46, 0.45, 0.94] as const;
+const strengths = [
+  { icon: Wallet, label: "Marketplaces and payments" },
+  { icon: Bot, label: "AI systems and agents" },
+  { icon: Languages, label: "Arabic-first apps" },
+  { icon: Smartphone, label: "iOS, Android and web" },
+];
 
-function useCharacterRipple(containerRef: React.RefObject<HTMLElement | null>) {
-  const rafRef = useRef<number>(0);
-  const spansRef = useRef<HTMLSpanElement[]>([]);
-
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      const spans = spansRef.current;
-      if (!spans.length) return;
-
-      for (let i = 0; i < spans.length; i++) {
-        const span = spans[i];
-        const rect = span.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dx = e.clientX - cx;
-        const dy = e.clientY - cy;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const maxDist = 150;
-
-        if (dist < maxDist) {
-          const strength = (1 - dist / maxDist) * 2;
-          const yOffset = -strength * (dy > 0 ? 1 : -1);
-          span.style.transform = `translateY(${yOffset}px)`;
-          span.style.transition = "transform 0.15s ease-out";
-        } else {
-          span.style.transform = "translateY(0)";
-          span.style.transition = "transform 0.4s ease-out";
-        }
-      }
-    });
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    const spans = spansRef.current;
-    for (let i = 0; i < spans.length; i++) {
-      spans[i].style.transform = "translateY(0)";
-      spans[i].style.transition = "transform 0.6s ease-out";
-    }
-  }, []);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Check for touch device
-    if ("ontouchstart" in window) return;
-
-    spansRef.current = Array.from(
-      container.querySelectorAll<HTMLSpanElement>("[data-char]")
-    );
-
-    container.addEventListener("mousemove", handleMouseMove);
-    container.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      container.removeEventListener("mousemove", handleMouseMove);
-      container.removeEventListener("mouseleave", handleMouseLeave);
-      cancelAnimationFrame(rafRef.current);
-    };
-  }, [containerRef, handleMouseMove, handleMouseLeave]);
-}
-
-function RippleText({
-  text,
-  className,
-}: {
-  text: string;
-  className?: string;
-}) {
-  return (
-    <span className={className}>
-      {text.split("").map((char, i) =>
-        char === " " ? (
-          <span key={i}>&nbsp;</span>
-        ) : (
-          <span key={i} data-char className="inline-block will-change-transform">
-            {char}
-          </span>
-        )
-      )}
-    </span>
-  );
-}
-
-export default function Hero() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-  }, []);
-
-  useCharacterRipple(headlineRef);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-
-  const particleOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0]);
-  const scrollIndicatorOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.1],
-    [1, 0]
-  );
+export default function Hero({ onOpenPalette }: { onOpenPalette: () => void }) {
+  const reduced = useReducedMotion() ?? false;
+  const live = projects.filter((p) => p.status === "Live").length;
+  const section = useRef<HTMLElement>(null);
+  const onScreen = useInView(section);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative min-h-[100svh] flex items-center overflow-hidden noise-texture"
-    >
-      {/* Particle field with scroll-linked fadeout */}
-      <motion.div className="absolute inset-0" style={{ opacity: particleOpacity }}>
-        <Scene />
-      </motion.div>
-
-      {/* Radial gradient spotlight on text area */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_20%_50%,rgba(255,255,255,0.85)_0%,rgba(255,255,255,0.3)_50%,transparent_100%)] z-[1] pointer-events-none" />
-
-      {/* Ambient gradient orb */}
-      <motion.div
-        className="absolute w-[40vw] h-[40vw] rounded-full blur-[120px] pointer-events-none z-[1]"
-        style={{ background: "rgba(15, 23, 42, 0.03)" }}
-        animate={{
-          x: ["-5%", "5%", "-5%"],
-          y: ["-5%", "8%", "-5%"],
+    <section ref={section} id="top" aria-labelledby="hero-name" className="relative flex min-h-[100svh] items-center overflow-hidden px-5 pb-12 pt-24 md:px-10 lg:px-16 lg:pb-16 lg:pt-28">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(42% 50% at 70% 46%, rgba(250,162,27,.16), transparent 70%), radial-gradient(34% 40% at 88% 70%, rgba(86,86,255,.14), transparent 70%), radial-gradient(30% 34% at 58% 20%, rgba(220,184,119,.08), transparent 70%)",
         }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        initial={{ top: "20%", left: "10%" }}
       />
 
-      {/* Bottom gradient fade to surface for seamless transition */}
-      <div className="absolute bottom-0 left-0 right-0 h-[150px] bg-gradient-to-b from-transparent to-surface z-[2] pointer-events-none" />
+      <div className="relative z-10 mx-auto grid w-full max-w-[1500px] grid-cols-1 items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-6">
+        <div className="relative z-10 order-2 lg:order-1">
+          <div id="hero-name">
+            <LiveName text="Dani Zein" className="select-none text-[clamp(3.75rem,9.5vw,9.5rem)] leading-[0.86] tracking-[-0.035em] text-text" />
+          </div>
 
-      {/* Content */}
-      <div className="relative z-[5] px-6 sm:px-8 max-w-5xl mx-auto w-full text-center md:text-left">
-        {/* Mono label */}
-        <motion.p
-          initial={{ opacity: 0, filter: "blur(6px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          transition={{ duration: 0.5, delay: 0.2, ease }}
-          className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-text-muted mb-6 md:mb-8"
-        >
-          Dani Zein / Full-Stack Developer
-        </motion.p>
-
-        {/* Headline with character ripple */}
-        <div ref={headlineRef}>
-          {/* Line 1 */}
-          <motion.div
-            initial={{ clipPath: "inset(100% 0 0 0)", y: 20 }}
-            animate={{ clipPath: "inset(0% 0 0 0)", y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5, ease }}
+          <p
+            style={{ animationDelay: "600ms" }}
+            className="fadeup mt-6 max-w-[26ch] text-[clamp(1.35rem,2.1vw,2rem)] font-medium leading-[1.22] tracking-[-0.015em] text-text lg:mt-8"
           >
-            <h1 className="text-[clamp(2.2rem,6vw,5.5rem)] font-bold tracking-tight leading-[0.95] text-text-primary">
-              <RippleText text="I build the platforms" />
-            </h1>
-          </motion.div>
+            I build products end to end, from the database to the App Store.
+          </p>
 
-          {/* Line 2 */}
-          <motion.div
-            initial={{ clipPath: "inset(100% 0 0 0)", y: 20 }}
-            animate={{ clipPath: "inset(0% 0 0 0)", y: 0 }}
-            transition={{ duration: 0.7, delay: 0.8, ease }}
+          {/* Proof: the real products, straight away */}
+          <a
+            href="#work"
+            style={{ animationDelay: "750ms" }}
+            className="fadeup group mt-7 inline-flex flex-col items-start gap-3 rounded-[26px] border border-line bg-white/[0.03] p-3 pr-5 backdrop-blur-sm transition-colors hover:border-line-strong sm:flex-row sm:items-center sm:gap-4 sm:rounded-full sm:py-2 sm:pl-2"
           >
-            <h1 className="text-[clamp(2.2rem,6vw,5.5rem)] font-bold tracking-tight leading-[0.95] text-text-secondary">
-              <RippleText text="startups " />
-              <span
-                style={{
-                  background: "linear-gradient(135deg, #111827, #2563EB)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >depend</span>
-              <RippleText text=" on." />
-            </h1>
-          </motion.div>
+            <span className="flex -space-x-2.5">
+              {projects.map((p) => (
+                <span key={p.slug} className="rounded-[26%] ring-2 ring-black transition-transform duration-300 group-hover:translate-x-0.5">
+                  <ProjectLogo slug={p.slug} name={p.name} size={32} />
+                </span>
+              ))}
+            </span>
+            <span className="pl-1 text-[14px] leading-snug text-text-2 sm:pl-0">
+              <span className="text-text">{projects.length} products shipped.</span> {live} live on the App Store, Google Play and the web.
+            </span>
+          </a>
+
+          <ul style={{ animationDelay: "880ms" }} className="fadeup mt-6 grid max-w-[560px] grid-cols-2 gap-2">
+            {strengths.map(({ icon: Icon, label }) => (
+              <li key={label} className="flex items-center gap-2.5 rounded-2xl border border-line bg-white/[0.02] px-3.5 py-3 text-[14px] text-text">
+                <Icon className="h-4 w-4 shrink-0 text-text-2" strokeWidth={1.8} aria-hidden="true" />
+                {label}
+              </li>
+            ))}
+          </ul>
+
+          <div style={{ animationDelay: "1000ms" }} className="fadeup mt-8 flex flex-wrap items-center gap-3">
+            <a
+              href="#work"
+              className="inline-flex h-12 items-center rounded-full bg-text px-6 text-[15px] font-medium text-black transition-transform hover:scale-[1.03] active:scale-[0.98]"
+            >
+              See the work
+            </a>
+            <a
+              href="#contact"
+              className="inline-flex h-12 items-center rounded-full border border-line-strong px-6 text-[15px] font-medium text-text transition-colors hover:bg-white/5"
+            >
+              Start a project
+            </a>
+            <button
+              type="button"
+              onClick={onOpenPalette}
+              className="ml-1 hidden h-12 items-center gap-2 rounded-full px-3 text-[14px] text-text-3 transition-colors hover:text-text md:inline-flex"
+            >
+              <kbd className="rounded-md border border-line-strong px-1.5 py-0.5 font-sans text-[12px]">⌘K</kbd>
+              jump anywhere
+            </button>
+          </div>
+          <p style={{ animationDelay: "1100ms" }} className="fadeup mt-8 text-[14px] text-text-3">
+            Lebanon, working worldwide. I reply in English, Arabic or French.
+          </p>
         </div>
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.1, ease }}
-          className="mt-6 md:mt-8 text-base sm:text-lg text-text-muted max-w-xl leading-relaxed mx-auto md:mx-0"
-        >
-          Mobile apps, web platforms, payment systems. Zero to App Store.
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 1.3, ease }}
-          className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start"
-        >
-          <Button variant="primary" size="lg" href="#projects">
-            View Projects
-          </Button>
-          <Button variant="outline" size="lg" href="#contact">
-            Let&apos;s Talk
-          </Button>
-        </motion.div>
+        <div className="relative order-1 h-[42svh] min-h-[300px] lg:order-2 lg:h-[min(80svh,760px)]">
+          <View className="absolute inset-0">
+            <HeroScene reduced={reduced} active={onScreen} />
+          </View>
+        </div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[6]"
-        style={{ opacity: scrollIndicatorOpacity }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.5 }}
-      >
-        {isMobile ? (
-          <motion.svg
-            className="w-5 h-5 text-text-muted"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M19 9l-7 7-7-7"
-            />
-          </motion.svg>
-        ) : (
-          <div className="w-px h-10 bg-border/40 relative overflow-hidden">
-            <div className="w-full h-3 bg-text-muted/60 animate-scroll-line" />
-          </div>
-        )}
-      </motion.div>
     </section>
   );
 }
