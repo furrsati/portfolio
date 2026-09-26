@@ -10,10 +10,10 @@ export const TV = { w: 4.1, h: 2.34, t: 0.045, bottom: 0.52 };
 export const WIN = { w: 3.3, h: 2.215, t: 0.07, lift: 0.5 };
 /** Floating HQ panels: offset from the window centre, size, and texture crop (u0,u1,v0,v1 from top-left). */
 export const PANELS = [
-  // The mission card, top left.
-  { pos: [-1.62, 0.84, -0.55] as const, w: 1.3, h: 0.764, crop: [0.055, 0.2625, 0.122, 0.304] as const, depth: 1 },
-  // The agent's tool call (Bash + command), lower right.
-  { pos: [1.36, -0.9, -0.34] as const, w: 2.05, h: 0.384, crop: [0.3125, 0.9625, 0.598, 0.78] as const, depth: 0.65 },
+  // A live task: "Furrsati 2.5 in the Play Store and App Store", top left.
+  { pos: [-1.66, 0.86, -0.55] as const, w: 1.6, h: 0.648, crop: [0.145, 0.5155, 0.1147, 0.3538] as const, depth: 1 },
+  // A finished task with its "Backend live · OTA live" tags, lower right.
+  { pos: [1.36, -0.92, -0.34] as const, w: 2.05, h: 0.47, crop: [0.145, 0.5155, 0.7498, 0.8853] as const, depth: 0.65 },
 ];
 export const PLINTH = { t: 0.07 };
 

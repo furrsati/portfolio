@@ -116,6 +116,7 @@ export default function Chapter({ project, n, total, flip }: { project: Project;
                 <DeviceScene
                   device={project.device}
                   screens={project.screens}
+                  film={project.film}
                   index={screen}
                   glow={project.glow}
                   progress={scrollYProgress}

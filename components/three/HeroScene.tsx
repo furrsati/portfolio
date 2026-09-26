@@ -82,9 +82,9 @@ function useCycle(n: number, ms: number, offset: number, run: boolean) {
   return i;
 }
 
-const FURRSATI = ["/work/furrsati-m1.jpg", "/work/furrsati-m2.jpg", "/work/furrsati-m3.jpg"];
-const COLLAB = ["/work/collabfront-m1.jpg", "/work/collabfront-m3.jpg"];
-const POT = ["/work/pot-hero.jpg", "/work/pot-ad.jpg"];
+const FURRSATI = ["/work/furrsati-2.jpg", "/work/furrsati-1.jpg", "/work/furrsati-3.jpg", "/work/furrsati-4.jpg"];
+const COLLAB = ["/work/collabfront-1.jpg", "/work/collabfront-3.jpg", "/work/collabfront-2.jpg"];
+const POT = ["/work/pot-film-poster.jpg", "/work/pot-ad.jpg"];
 
 function Stage({ reduced, active }: { reduced: boolean; active: boolean }) {
   const live = useRef<Live>(makeLive());
@@ -117,9 +117,9 @@ function Stage({ reduced, active }: { reduced: boolean; active: boolean }) {
     if (!reduced && active) sway.current += dt;
     const settle = start < 0 ? 0 : easeInOut(span(now() - start, 0, 2.4));
     // A slow turntable sway once everything has arrived, plus a lean toward the pointer.
-    const idle = Math.sin(sway.current * 0.32) * 0.07 * settle;
+    const idle = Math.sin(sway.current * 0.32) * 0.05 * settle;
     if (turn.current) {
-      turn.current.rotation.y = idle + L.px * 0.16 + (1 - settle) * -0.35;
+      turn.current.rotation.y = idle + L.px * 0.1 + (1 - settle) * -0.35;
       turn.current.rotation.x = -L.py * 0.04;
     }
   });
@@ -129,7 +129,14 @@ function Stage({ reduced, active }: { reduced: boolean; active: boolean }) {
       <Pedestal live={live} color="#FAA21B" enter={start >= 0} reduced={reduced} />
       <SoftShadow live={live} size={2 * R + 0.2} far={3} opacity={0.62} blur={2.5} />
       <Enter pose={LAPTOP_POSE} from={{ dy: -1.6, scale: 0.9 }} delay={0.15} dur={1.2} start={start} reduced={reduced}>
-        <Laptop screens={POT} index={iT} enter={lidOpen} reduced={reduced} glow="#DCB877" />
+        <Laptop
+          screens={POT}
+          index={iT}
+          enter={lidOpen}
+          reduced={reduced}
+          glow="#DCB877"
+          film={reduced ? undefined : { src: "/work/pot-film.mp4", poster: "/work/pot-film-poster.jpg", mode: "loop", rate: 2, active }}
+        />
       </Enter>
       <Enter pose={LEFT_POSE} from={{ dx: -2.4, dz: 0.6, yaw: 0.9, scale: 0.92 }} delay={0.85} dur={1.25} start={start} reduced={reduced}>
         <Phone screens={FURRSATI} index={iL} />
@@ -151,7 +158,7 @@ export default function HeroScene({ reduced = false, active = true }: { reduced?
   // Seen from a little above so the pedestal reads as a stage; fitted to the view.
   const { pos, target } = useMemo(() => {
     const t = Math.tan(THREE.MathUtils.degToRad(FOV / 2));
-    const w = 2 * R + 0.9;
+    const w = 2 * R + 1.7; // room for the phones as the stage turns and leans
     const h = 3.3;
     const dist = Math.max(h / 2 / t, w / 2 / (t * aspect)) * 1.04;
     const elev = 0.22;

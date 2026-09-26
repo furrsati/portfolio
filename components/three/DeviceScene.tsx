@@ -6,7 +6,7 @@ import type { MotionValue } from "framer-motion";
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { Device } from "@/lib/content/projects";
-import { AppWindow, Laptop, Phone, PhoneFan, Television } from "./devices";
+import { AppWindow, Laptop, Phone, PhoneFan, Television, type Film } from "./devices";
 import { FACE, FAN, FOV, PHONE, frame, plinthRadius, type Framing } from "./framing";
 import { GLOW_LAYER, bindPointer, clamp01, easeInOut, easeOutQuart, makeLive, now, pointer, sec, span, type Live } from "./kit";
 import { Halo, Pedestal, SoftShadow } from "./Stagecraft";
@@ -30,6 +30,8 @@ type Props = {
   reduced?: boolean;
   /** hero = single phone, halo only; chapter = full choreography + pedestal. */
   variant?: "hero" | "chapter";
+  /** A screen recording to play on the device, scrubbed by the pinned scroll. */
+  film?: { src: string; poster: string };
 };
 
 /**
@@ -82,6 +84,7 @@ export default function DeviceScene({
   enter = true,
   reduced = false,
   variant = "chapter",
+  film,
 }: Props) {
   const hero = variant === "hero";
   const dir = sweep < 0 ? -1 : 1;
@@ -156,6 +159,8 @@ export default function DeviceScene({
     const p = progress ? clamp01(progress.get()) : 0.5;
     L.progress = THREE.MathUtils.damp(L.progress, p, 4.5, dt);
     L.fan = reduced ? 1 : pin ? easeInOut(span(clamp01(pin.get()), 0.03, 0.36)) : 1;
+    // Pinned-story progress (the film scrubs with it); the film glides on its own.
+    L.pin = pin ? clamp01(pin.get()) : p;
 
     // Turntable: scroll turn + pointer + a slow idle sway (rotation only, no bob).
     const t = now();
@@ -213,7 +218,16 @@ export default function DeviceScene({
                 ) : (
                   <PhoneFan screens={screens} index={index} live={live} sideDir={dir} reduced={reduced} />
                 ))}
-              {device === "laptop" && <Laptop screens={screens} index={index} enter={enter} reduced={reduced} glow={glow[0]} />}
+              {device === "laptop" && (
+                <Laptop
+                  screens={screens}
+                  index={index}
+                  enter={enter}
+                  reduced={reduced}
+                  glow={glow[0]}
+                  film={film ? ({ ...film, mode: "scrub", live } satisfies Film) : undefined}
+                />
+              )}
               {device === "tv" && <Television screens={screens} index={index} enter={enter} reduced={reduced} glow={glow[0]} />}
               {device === "window" && <AppWindow screens={screens} index={index} live={live} enter={enter} reduced={reduced} />}
             </Appear>

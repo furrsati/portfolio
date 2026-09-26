@@ -72,6 +72,8 @@ export type Project = {
   device: Device;
   /** Screens cycled on the device, paths under /public */
   screens: string[];
+  /** A screen recording played on the device, scrubbed by scroll (replaces the screens). */
+  film?: { src: string; poster: string };
   links: { kind: "web" | "appstore" | "play"; label: string; href: string }[];
 };
 
@@ -101,7 +103,7 @@ export const projects: Project[] = [
     stack: ["React Native", "Node.js", "Postgres", "Prisma", "Stripe", "Socket.io", "Redis", "Claude"],
     glow: ["#FAA21B", "#05696B"],
     device: "phone",
-    screens: ["/work/furrsati-m1.jpg", "/work/furrsati-m2.jpg", "/work/furrsati-m3.jpg"],
+    screens: ["/work/furrsati-1.jpg", "/work/furrsati-2.jpg", "/work/furrsati-3.jpg"],
     links: [
       { kind: "web", label: "furrsati.com", href: "https://furrsati.com" },
       { kind: "appstore", label: "App Store", href: "https://apps.apple.com/us/app/furrsati-freelance-hire/id6759173862" },
@@ -130,7 +132,7 @@ export const projects: Project[] = [
     stack: ["Expo", "React Native", "Express", "Prisma", "Supabase", "Stripe", "Socket.io"],
     glow: ["#5656FF", "#C0FF2E"],
     device: "phone",
-    screens: ["/work/collabfront-m1.jpg", "/work/collabfront-m3.jpg"],
+    screens: ["/work/collabfront-1.jpg", "/work/collabfront-2.jpg", "/work/collabfront-3.jpg"],
     links: [
       { kind: "web", label: "collabfront.me", href: "https://collabfront.me" },
       { kind: "appstore", label: "App Store", href: "https://apps.apple.com/us/app/collabfront/id6760047475" },
@@ -160,7 +162,8 @@ export const projects: Project[] = [
     stack: ["Next.js", "Supabase", "Postgres", "GSAP", "Resend", "Vercel"],
     glow: ["#DCB877", "#D35400"],
     device: "laptop",
-    screens: ["/work/pot-hero.jpg", "/work/pot-ad.jpg"],
+    screens: ["/work/pot-film-poster.jpg"],
+    film: { src: "/work/pot-film.mp4", poster: "/work/pot-film-poster.jpg" },
     links: [{ kind: "web", label: "proofoftalk.io", href: "https://proofoftalk.io" }],
   },
   {
@@ -187,7 +190,7 @@ export const projects: Project[] = [
     stack: ["Next.js", "Supabase", "Postgres", "Drizzle", "Claude", "Tailwind CSS"],
     glow: ["#B61F24", "#326DB1"],
     device: "tv",
-    screens: ["/work/yalla-board.jpg", "/work/yalla-question.jpg", "/work/yalla-judge.jpg"],
+    screens: ["/work/yalla-1.jpg", "/work/yalla-2.jpg", "/work/yalla-3.jpg"],
     links: [{ kind: "web", label: "yallatrivia.app", href: "https://www.yallatrivia.app" }],
   },
   {
@@ -240,7 +243,7 @@ export const projects: Project[] = [
     stack: ["Expo", "React Native", "TanStack Query", "Zod", "Firebase", "TypeScript"],
     glow: ["#FFBF3F", "#E11D48"],
     device: "phone",
-    screens: ["/work/newsgate-01-home.jpg", "/work/newsgate-03-sections.jpg", "/work/newsgate-02-article.jpg"],
+    screens: ["/work/newsgate-1.jpg", "/work/newsgate-2.jpg", "/work/newsgate-3.jpg"],
     links: [{ kind: "web", label: "newsgate.tv", href: "https://www.newsgate.tv" }],
   },
   {
@@ -266,7 +269,7 @@ export const projects: Project[] = [
     stack: ["TypeScript", "Fastify", "SQLite", "React", "Electron", "Claude"],
     glow: ["#D4714E", "#D9A441"],
     device: "window",
-    screens: ["/work/hq-app.jpg"],
+    screens: ["/work/hq-1.jpg", "/work/hq-2.jpg", "/work/hq-3.jpg"],
     links: [],
   },
 ];

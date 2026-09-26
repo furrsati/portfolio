@@ -81,6 +81,127 @@ function Screen({
 }
 
 /* ------------------------------------------------------------------ */
+/* Film: a real screen recording on a device screen.                  */
+/*  - "scrub": its time follows the chapter's pinned scroll progress, */
+/*    forward and backward, like the scroll-driven site it records.   */
+/*  - "loop":  plays muted on repeat at `rate`, only while `active`.  */
+/* Shows the poster until the first frame is decoded.                 */
+/* ------------------------------------------------------------------ */
+export type Film = {
+  src: string;
+  poster: string;
+  mode: "scrub" | "loop";
+  rate?: number;
+  live?: React.RefObject<Live>;
+  active?: boolean;
+};
+
+/** One <video> + texture per film and mode, created once and kept (like the geometry cache). */
+function filmSource(src: string, loop: boolean) {
+  return once(`film:${src}:${loop ? "loop" : "scrub"}`, () => {
+    const video = document.createElement("video");
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.preload = "auto";
+    video.loop = loop;
+    video.src = src;
+    const tex = new THREE.VideoTexture(video);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return { video, tex };
+  });
+}
+
+/** Mark the video texture ready to display at the screen's aspect (runs once metadata is known). */
+function fitFilm(video: HTMLVideoElement, tex: THREE.VideoTexture, aspect: number) {
+  video.width = video.videoWidth;
+  video.height = video.videoHeight;
+  cover(tex, aspect);
+}
+
+const setRate = (v: HTMLVideoElement, r: number) => {
+  v.playbackRate = r;
+};
+const seek = (v: HTMLVideoElement, t: number) => {
+  v.currentTime = t;
+};
+
+function FilmScreen({
+  film,
+  width,
+  height,
+  radius,
+  y = 0,
+  z,
+  power,
+}: {
+  film: Film;
+  width: number;
+  height: number;
+  radius: number;
+  y?: number;
+  z: number;
+  power?: Power;
+}) {
+  const aspect = width / height;
+  const posterLoaded = useTexture(film.poster) as THREE.Texture;
+  const poster = useMemo(() => cover(posterLoaded.clone(), aspect), [posterLoaded, aspect]);
+  const geo = useMemo(() => roundedRect(width, height, radius), [width, height, radius]);
+  const mat = useRef<THREE.MeshBasicMaterial>(null);
+  const { video, tex } = filmSource(film.src, film.mode === "loop");
+  const [ready, setReady] = useState(false);
+  const shown = useRef(0);
+
+  useEffect(() => {
+    const onData = () => {
+      fitFilm(video, tex, aspect);
+      setReady(true);
+    };
+    if (video.readyState >= 2) onData();
+    video.addEventListener("loadeddata", onData);
+    // iOS only buffers after a play() call; start and (for scrubbing) pause straight away.
+    const unlock = video.play();
+    if (film.mode === "scrub") unlock?.then(() => video.pause()).catch(() => {});
+    return () => video.removeEventListener("loadeddata", onData);
+  }, [video, tex, aspect, film.mode]);
+
+  useEffect(() => {
+    if (film.mode !== "loop") return;
+    setRate(video, film.rate ?? 1);
+    if (film.active ?? true) video.play().catch(() => {});
+    else video.pause();
+  }, [video, film.mode, film.rate, film.active]);
+
+  // The video and its texture are cached for reuse; only pause it and free the poster copy.
+  useEffect(
+    () => () => {
+      video.pause();
+      poster.dispose();
+    },
+    [video, poster],
+  );
+
+  useFrame((_, delta) => {
+    const m = mat.current;
+    if (!m) return;
+    if (power) m.color.setScalar(power.current);
+    if (film.mode !== "scrub" || !ready || !video.duration) return;
+    const L = film.live?.current;
+    const target = (L ? Math.min(1, Math.max(0, L.pin)) : 0) * (video.duration - 0.05);
+    // Glide toward the scroll position so fast flicks still read as motion.
+    shown.current = THREE.MathUtils.damp(shown.current, target, 9, sec(delta));
+    if (!video.seeking && Math.abs(video.currentTime - shown.current) > 1 / 45) seek(video, shown.current);
+  });
+
+  return (
+    <mesh geometry={geo} position={[0, y, z]}>
+      <meshBasicMaterial ref={mat} map={ready ? tex : poster} toneMapped={false} />
+    </mesh>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Phone                                                              */
 /* ------------------------------------------------------------------ */
 const P = PHONE;
@@ -259,12 +380,14 @@ export function Laptop({
   enter,
   reduced,
   glow,
+  film,
 }: {
   screens: string[];
   index: number;
   enter: boolean;
   reduced: boolean;
   glow: string;
+  film?: Film;
 }) {
   const g = laptopParts();
   const lid = useRef<THREE.Group>(null);
@@ -322,7 +445,11 @@ export function Laptop({
           <mesh geometry={g.lid.front} material={mats.blackGlass()} />
           <mesh geometry={g.lid.back} material={mats.aluminium()} />
         </group>
-        <Screen screens={screens} index={index} width={L_SCREEN.w} height={L_SCREEN.h} radius={0.03} y={L_.lidH / 2 + 0.03} z={0.0006} power={power} />
+        {film ? (
+          <FilmScreen film={film} width={L_SCREEN.w} height={L_SCREEN.h} radius={0.03} y={L_.lidH / 2 + 0.03} z={0.0006} power={power} />
+        ) : (
+          <Screen screens={screens} index={index} width={L_SCREEN.w} height={L_SCREEN.h} radius={0.03} y={L_.lidH / 2 + 0.03} z={0.0006} power={power} />
+        )}
         <mesh geometry={g.lidGlass} position={[0, L_.lidH / 2, 0.0022]} material={mats.sheenSoft()} renderOrder={5} layers={GLOW_LAYER} />
       </group>
     </group>
