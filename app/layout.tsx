@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono, Tajawal } from "next/font/google";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -25,7 +26,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(siteUrl),
   title: "Dani Zein · I build products end to end",
   description:
     "Full-stack developer in Lebanon, working worldwide. Marketplaces, AI systems and Arabic-first apps: seven real products, with live demos of how they work.",
