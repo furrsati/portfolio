@@ -50,7 +50,7 @@ export const engagements: { name: string; body: string; seen: string[]; accent: 
   {
     name: "Legacy rescue and cutover",
     body: "Rebuilt next to the old site, every URL kept, switched with one DNS change.",
-    seen: ["proof-of-talk", "altamira"],
+    seen: ["proof-of-talk"],
     accent: "#E5813F",
   },
   {

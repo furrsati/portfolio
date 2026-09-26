@@ -94,7 +94,8 @@ export const mats = {
           metalness: 0,
           roughness: 0.12,
           ior: 1.5,
-          envMapIntensity: 0.4,
+          // A faint reflection only: enough to read as glass, never enough to wash out the screen.
+          envMapIntensity: 0.16,
           transparent: true,
           depthWrite: false,
           ...LIGHT_BLEND,

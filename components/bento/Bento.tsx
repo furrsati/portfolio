@@ -3,7 +3,7 @@
 import AgentsTile from "./tiles/AgentsTile";
 import CutoverTile from "./tiles/CutoverTile";
 import EscrowTile from "./tiles/EscrowTile";
-import PlateTile from "./tiles/PlateTile";
+import BookingTile from "./tiles/BookingTile";
 import RealtimeTile from "./tiles/RealtimeTile";
 import RtlTile from "./tiles/RtlTile";
 import ShipTile from "./tiles/ShipTile";
@@ -28,7 +28,7 @@ export default function Bento() {
           <AgentsTile className="md:col-span-6 lg:col-span-5 lg:row-span-2" />
           <RtlTile className="md:col-span-3 lg:col-span-4" />
           <TriviaTile className="md:col-span-3 lg:col-span-4" />
-          <PlateTile className="md:col-span-6 lg:col-span-4" />
+          <BookingTile className="md:col-span-6 lg:col-span-4" />
           <CutoverTile className="md:col-span-6 lg:col-span-6" />
           <RealtimeTile className="md:col-span-3 lg:col-span-3" />
           <ShipTile className="md:col-span-3 lg:col-span-3" />

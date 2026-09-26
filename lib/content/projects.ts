@@ -199,20 +199,20 @@ export const projects: Project[] = [
     credit: "Client work",
     status: "Staging",
     platforms: ["web"],
-    headline: "A hotel in Caracas that takes bookings over slow payment rails, and can finally see its own car park.",
+    headline: "A luxury hotel in Caracas with its own booking system, built for slow, manual payments.",
     story: {
       challenge:
-        "A hotel, spa, casino and shopping complex in Caracas needed bookings that work with slow, manual payments, and its parking system had no reporting at all.",
+        "A hotel, spa, casino and shopping complex in Caracas needed a site guests could book from in Spanish or English, even though most payments arrive slowly by Pago Móvil or Zelle.",
       built:
-        "A Spanish and English site, a booking engine with an audited state machine, a staff admin, and parking analytics built on data recovered from the vendor's own system.",
-      result: "Running on staging and checked against the designer's files, down to 652 individual text spans.",
+        "The whole thing, A to Z: a bilingual website for rooms, dining, spa and events, a four-step booking flow, a custom booking engine that audits every step, and a Spanish admin panel where staff run reservations, rooms, offers and content.",
+      result: "Running on staging and matched to the designer's files down to 652 individual text spans, ready for the hotel's own domain.",
     },
     highlights: [
-      { icon: "calendar", title: "Bookings over slow rails", body: "Pago Móvil and Zelle payments wait in review, with every step audited." },
-      { icon: "car", title: "A car park it can see", body: "Occupancy and revenue rebuilt from a system that shipped with no reports." },
-      { icon: "scan", title: "Look-alike plate search", body: "Staff find the car even when the camera reads 8 as B." },
+      { icon: "calendar", title: "Bookings over slow rails", body: "Pago Móvil and Zelle payments wait in review; every step is audited and emailed." },
+      { icon: "workflow", title: "An admin the staff runs", body: "Reservations, rooms, offers and content, with only valid next steps offered." },
+      { icon: "languages", title: "Pixel-true, in two languages", body: "Spanish and English with localized URLs, checked against the designer's files." },
     ],
-    roles: ["Full-stack", "Booking engine", "Staff admin", "Data", "Design fidelity"],
+    roles: ["Full-stack", "Booking engine", "Admin panel", "Bilingual site", "Design fidelity"],
     stack: ["Next.js", "Postgres", "Drizzle", "Neon", "Puppeteer", "Vercel"],
     glow: ["#C88A3D", "#2E6B55"],
     device: "laptop",

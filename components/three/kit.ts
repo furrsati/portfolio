@@ -170,7 +170,7 @@ export function cover(tex: THREE.Texture, screenAspect: number) {
   const img = tex.image as { width: number; height: number } | undefined;
   tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 8;
+  tex.anisotropy = 16; // clamped to the GPU maximum by three
   if (img?.width) {
     const a = img.width / img.height;
     if (a > screenAspect) {
@@ -189,7 +189,7 @@ export function cover(tex: THREE.Texture, screenAspect: number) {
 export function crop(tex: THREE.Texture, u0: number, u1: number, v0: number, v1: number) {
   tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 8;
+  tex.anisotropy = 16; // clamped to the GPU maximum by three
   tex.repeat.set(u1 - u0, v1 - v0);
   tex.offset.set(u0, 1 - v1);
   tex.needsUpdate = true;
@@ -211,3 +211,23 @@ export const LIGHT_BLEND = {
   blendSrcAlpha: THREE.ZeroFactor,
   blendDstAlpha: THREE.OneFactor,
 } as const;
+
+/**
+ * Screens show screenshots drawn smaller than their real size, so the GPU
+ * samples a pre-shrunk (mip) copy and small UI text goes soft. A negative LOD
+ * bias makes it pick the sharper, larger copy: crisp text, no shimmer.
+ * Use as <meshBasicMaterial onBeforeCompile={sharpScreen} customProgramCacheKey={sharpKey} />.
+ */
+const SHARP_MAP = /* glsl */ `
+#ifdef USE_MAP
+  vec4 sampledDiffuseColor = texture2D( map, vMapUv, -0.7 );
+  #ifdef DECODE_VIDEO_TEXTURE
+    sampledDiffuseColor = sRGBTransferEOTF( sampledDiffuseColor );
+  #endif
+  diffuseColor *= sampledDiffuseColor;
+#endif
+`;
+export function sharpScreen(shader: { fragmentShader: string }) {
+  shader.fragmentShader = shader.fragmentShader.replace("#include <map_fragment>", SHARP_MAP);
+}
+export const sharpKey = () => "sharp-screen";

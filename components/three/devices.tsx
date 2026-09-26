@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { FAN, LAPTOP, PANELS, PHONE, TV, WIN, fanPose } from "./framing";
-import { GLOW_LAYER, clamp01, cover, crop, easeOutCubic, now, once, roundedRect, sec, slab, span, type Live, LIGHT_BLEND } from "./kit";
+import { GLOW_LAYER, clamp01, cover, crop, easeOutCubic, now, once, roundedRect, sec, slab, span, type Live, LIGHT_BLEND, sharpScreen, sharpKey } from "./kit";
 import { glowShader, glowUniforms, mats } from "./materials";
 
 type Power = React.RefObject<number>;
@@ -71,10 +71,10 @@ function Screen({
   return (
     <group position={[0, y, z]}>
       <mesh geometry={geo}>
-        <meshBasicMaterial ref={back} map={textures[pair.prev]} toneMapped={false} />
+        <meshBasicMaterial ref={back} map={textures[pair.prev]} toneMapped={false} onBeforeCompile={sharpScreen} customProgramCacheKey={sharpKey} />
       </mesh>
       <mesh geometry={geo} position={[0, 0, 0.0004]}>
-        <meshBasicMaterial ref={front} map={textures[pair.cur]} transparent toneMapped={false} depthWrite={false} />
+        <meshBasicMaterial ref={front} map={textures[pair.cur]} transparent toneMapped={false} depthWrite={false} onBeforeCompile={sharpScreen} customProgramCacheKey={sharpKey} />
       </mesh>
     </group>
   );
@@ -196,7 +196,7 @@ function FilmScreen({
 
   return (
     <mesh geometry={geo} position={[0, y, z]}>
-      <meshBasicMaterial ref={mat} map={ready ? tex : poster} toneMapped={false} />
+      <meshBasicMaterial ref={mat} map={ready ? tex : poster} toneMapped={false} onBeforeCompile={sharpScreen} customProgramCacheKey={sharpKey} />
     </mesh>
   );
 }
@@ -584,7 +584,7 @@ function PanelFace({ src, geo, cropBox }: { src: string; geo: THREE.BufferGeomet
   useEffect(() => () => tex.dispose(), [tex]);
   return (
     <mesh geometry={geo} position={[0, 0, 0.0186]}>
-      <meshBasicMaterial map={tex} toneMapped={false} />
+      <meshBasicMaterial map={tex} toneMapped={false} onBeforeCompile={sharpScreen} customProgramCacheKey={sharpKey} />
     </mesh>
   );
 }
